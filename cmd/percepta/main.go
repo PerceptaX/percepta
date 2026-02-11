@@ -24,4 +24,5 @@ func init() {
 	rootCmd.AddCommand(observeCmd)
 	rootCmd.AddCommand(assertCmd)
 	rootCmd.AddCommand(diffCmd)
+	rootCmd.AddCommand(deviceCmd)
 }
