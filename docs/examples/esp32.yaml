@@ -1,0 +1,48 @@
+# Example: ESP32 with Status LED
+#
+# Hardware: ESP32 DevKit v1 with built-in RGB LED
+# Use case: Validate WiFi connection status via LED color
+#
+# Expected behavior:
+# - Blue blinking: Connecting to WiFi
+# - Green solid: Connected
+# - Red blinking: Connection failed
+
+# Device configuration
+vision:
+  provider: claude
+  api_key: ${ANTHROPIC_API_KEY}
+
+devices:
+  esp32:
+    type: esp32
+    camera_id: /dev/video0  # Adjust for your camera
+    firmware: v1.0.0
+
+# Camera setup tips:
+# 1. Position camera 15-20cm from ESP32
+# 2. Ensure LED is clearly visible in frame
+# 3. Avoid direct glare on LED
+# 4. Good lighting improves color detection accuracy
+
+# Example usage:
+#
+# 1. Add device:
+#    percepta device add esp32
+#
+# 2. Observe current state:
+#    percepta observe esp32
+#
+# 3. Assert WiFi connected (green LED solid):
+#    percepta assert esp32 "led('LED1').is_on() && led('LED1').color_rgb(0,255,0)"
+#
+# 4. Assert WiFi connecting (blue LED blinking):
+#    percepta assert esp32 "led('LED1').blinks() && led('LED1').color_rgb(0,0,255)"
+#
+# 5. Track firmware regression:
+#    percepta device set-firmware esp32 v1.0.0
+#    percepta observe esp32
+#    # Flash new firmware
+#    percepta device set-firmware esp32 v1.1.0
+#    percepta observe esp32
+#    percepta diff esp32 --from v1.0.0 --to v1.1.0

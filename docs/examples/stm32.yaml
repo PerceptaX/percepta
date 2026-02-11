@@ -1,0 +1,53 @@
+# Example: STM32 with OLED Display
+#
+# Hardware: STM32F4 Discovery + SSD1306 OLED display
+# Use case: Validate boot messages and sensor readings on display
+#
+# Expected behavior:
+# - Display shows "Initializing..." on boot
+# - Display shows "Temp: 23.5C" when ready
+# - Status LED (orange) blinks during sensor read
+
+# Device configuration
+vision:
+  provider: claude
+  api_key: ${ANTHROPIC_API_KEY}
+
+devices:
+  stm32:
+    type: stm32f4
+    camera_id: /dev/video0  # Adjust for your camera
+    firmware: main
+
+# Camera setup tips:
+# 1. Position camera 20-30cm from display for clear text capture
+# 2. Ensure display is perpendicular to camera (avoid angle distortion)
+# 3. OLED displays work best with high contrast
+# 4. Avoid reflections on display surface
+
+# Example usage:
+#
+# 1. Add device:
+#    percepta device add stm32
+#
+# 2. Observe current state:
+#    percepta observe stm32
+#
+# 3. Assert boot message appears:
+#    percepta assert stm32 "display('OLED').contains('Initializing')"
+#
+# 4. Assert sensor reading displayed:
+#    percepta assert stm32 "display('OLED').contains('Temp:')"
+#
+# 5. Assert status LED is blinking:
+#    percepta assert stm32 "led('STATUS').blinks()"
+#
+# 6. Combined assertion (display + LED):
+#    percepta assert stm32 "display('OLED').contains('Ready') && led('STATUS').is_on()"
+#
+# 7. Track display content changes across firmware:
+#    percepta device set-firmware stm32 v2.0
+#    percepta observe stm32
+#    percepta device set-firmware stm32 v2.1
+#    percepta observe stm32
+#    percepta diff stm32 --from v2.0 --to v2.1

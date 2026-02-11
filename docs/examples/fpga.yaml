@@ -1,0 +1,64 @@
+# Example: FPGA Dev Board with Multiple LEDs
+#
+# Hardware: Xilinx Arty A7 (or similar FPGA board) with 4 RGB LEDs
+# Use case: Validate state machine transitions via LED patterns
+#
+# Expected behavior:
+# - LED1 (blue): Clock signal indicator (~2Hz)
+# - LED2 (green): State machine in IDLE
+# - LED3 (yellow): State machine in RUNNING
+# - LED4 (red): Error condition
+
+# Device configuration
+vision:
+  provider: claude
+  api_key: ${ANTHROPIC_API_KEY}
+
+devices:
+  fpga:
+    type: fpga-arty-a7
+    camera_id: /dev/video0  # Adjust for your camera
+    firmware: bitstream-v1
+
+# Camera setup tips:
+# 1. Position camera 15-25cm from FPGA board
+# 2. Capture all 4 LEDs in single frame
+# 3. Bright LEDs work best (ensure sufficient current limiting resistors)
+# 4. RGB LEDs: Percepta detects individual color channels
+
+# Example usage:
+#
+# 1. Add device:
+#    percepta device add fpga
+#
+# 2. Observe current state:
+#    percepta observe fpga
+#
+# 3. Assert clock signal running (LED1 blinking blue):
+#    percepta assert fpga "led('LED1').blinks() && led('LED1').color_rgb(0,0,255)"
+#
+# 4. Assert state machine in IDLE (LED2 green, LED3 off):
+#    percepta assert fpga "led('LED2').is_on() && led('LED2').color_rgb(0,255,0) && led('LED3').is_off()"
+#
+# 5. Assert no errors (LED4 red should be off):
+#    percepta assert fpga "led('LED4').is_off()"
+#
+# 6. Combined multi-LED assertion:
+#    percepta assert fpga "led('LED1').blinks() && led('LED2').is_on() && led('LED3').is_off() && led('LED4').is_off()"
+#
+# 7. Track bitstream changes:
+#    percepta device set-firmware fpga bitstream-v1
+#    percepta observe fpga
+#    # Flash new bitstream
+#    percepta device set-firmware fpga bitstream-v2
+#    percepta observe fpga
+#    percepta diff fpga --from bitstream-v1 --to bitstream-v2
+#
+# 8. Validate state machine transition:
+#    # Trigger state change (e.g., button press, UART command)
+#    percepta observe fpga
+#    percepta assert fpga "led('LED3').is_on() && led('LED2').is_off()"
+#
+# Note: Single-frame capture may miss blinking LEDs that are OFF at capture instant.
+# If LED is expected but not detected, run observation multiple times or wait for
+# future multi-frame capture support (ISS-001).
