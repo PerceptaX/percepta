@@ -63,7 +63,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 2.5-01: Refactor parser to extract all LEDs with index-based naming
+- [x] 2.5-01: Refactor parser to extract all LEDs with index-based naming
 
 **Why this is critical:**
 Currently the parser only extracts the first LED match, causing:
@@ -119,6 +119,6 @@ Phases execute in numeric order: 1 → 2 → 2.5 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Core + Vision | 3/3 | Complete | 2026-02-11 |
 | 2. Assertions | 2/2 | Complete | 2026-02-11 |
-| 2.5. Multi-LED Identity (INSERTED) | 0/1 | Not started | - |
+| 2.5. Multi-LED Identity (INSERTED) | 1/1 | Complete | 2026-02-11 |
 | 3. Diff + Firmware Tracking | 0/2 | Not started | - |
 | 4. Polish + Alpha | 0/2 | Not started | - |

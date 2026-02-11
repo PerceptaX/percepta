@@ -6,23 +6,23 @@ See: .planning/PROJECT.md (updated 2026-02-11)
 
 **Core value:** observe() must work reliably. If Percepta can accurately tell you "the LED is blinking at 1.98 Hz" with 95%+ confidence, everything else follows.
 
-**Current focus:** Phase 2 — Assertions
+**Current focus:** Phase 2.5 — Multi-LED Signal Identity
 
 ## Current Position
 
-Phase: 2 of 4 (Assertions)
-Plan: 2 of 2 in current phase
+Phase: 2.5 of 4 (Multi-LED Identity - INSERTED)
+Plan: 1 of 1 in current phase
 Status: Phase complete
-Last activity: 2026-02-11 — Completed 02-02-PLAN.md
+Last activity: 2026-02-11 — Completed 2.5-01-PLAN.md
 
 Progress: █████████░ 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: 2.2 min
-- Total execution time: 0.18 hours
+- Total plans completed: 6
+- Average duration: 2.0 min
+- Total execution time: 0.20 hours
 
 **By Phase:**
 
@@ -30,10 +30,11 @@ Progress: █████████░ 100%
 |-------|-------|-------|----------|
 | 1     | 3     | 8 min | 2.7 min  |
 | 2     | 2     | 3 min | 1.5 min  |
+| 2.5   | 1     | 1 min | 1.0 min  |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (4 min), 01-03 (2 min), 02-01 (2 min), 02-02 (1 min)
-- Trend: Efficient execution, Phase 2 very fast (pre-updated plans)
+- Last 5 plans: 01-03 (2 min), 02-01 (2 min), 02-02 (1 min), 2.5-01 (1 min)
+- Trend: Highly efficient, surgical fixes very fast
 
 ## Accumulated Context
 
@@ -55,6 +56,8 @@ Recent decisions affecting current work:
 | 02    | Display assertions use contains() not exact match | OCR is noisy, exact match too brittle |
 | 02    | Timing assertions fail gracefully if signal missing | Better UX than panic, clear message to user |
 | 02    | 10% tolerance on blink rate, ±5 on RGB | Handles real-world sensor noise |
+| 2.5   | Index-based LED naming (LED1, LED2, LED3) | Establishes object permanence - stable identity enables diff |
+| 2.5   | No spatial tracking in MVP | Appearance order sufficient, spatial clustering can be added later |
 
 ### Deferred Issues
 
@@ -62,7 +65,7 @@ None yet.
 
 ### Blockers/Concerns
 
-**Phase 2.5 inserted (URGENT)**: Parser currently only extracts first LED match, causing unstable signal identity. This blocks Phase 3 diff functionality. Must fix multi-LED extraction with deterministic naming (LED1, LED2, LED3) before proceeding to Phase 3.
+None - Phase 2.5 blocking issue resolved. Parser now assigns stable LED identities.
 
 ### Roadmap Evolution
 
@@ -70,6 +73,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-11T13:28:12Z
-Stopped at: Completed 02-02-PLAN.md (Phase 2 complete)
+Last session: 2026-02-11T17:15:42Z
+Stopped at: Completed 2.5-01-PLAN.md (Phase 2.5 complete)
 Resume file: None
