@@ -33,7 +33,7 @@
 
 **Binary installation:**
 
-1. Download the binary for your platform from [Releases](https://github.com/perceptumx/percepta/releases)
+1. Download the binary for your platform from [Releases](https://github.com/Perceptax/percepta/releases)
 2. Extract and move to PATH:
    ```bash
    tar -xzf percepta-*.tar.gz
@@ -50,7 +50,7 @@
 
 **Build from source:**
 ```bash
-go install github.com/perceptumx/percepta/cmd/percepta@latest
+go install github.com/Perceptax/percepta/cmd/percepta@latest
 ```
 
 **Full installation guide:** [docs/installation.md](docs/installation.md)
@@ -94,8 +94,8 @@ Built with [Claude Code](https://claude.com/claude-code) and the Get Shit Done (
 
 ### Feedback
 
-- **Issues:** [GitHub Issues](https://github.com/perceptumx/percepta/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/perceptumx/percepta/discussions)
+- **Issues:** [GitHub Issues](https://github.com/Perceptax/percepta/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/Perceptax/percepta/discussions)
 - **Alpha testing:** Looking for 10 embedded developers to validate the core workflow. Reach out via GitHub!
 
 ### What's Next

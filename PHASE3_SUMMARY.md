@@ -53,7 +53,7 @@ All tasks from the Phase 3 plan have been successfully implemented and tested.
 
 ```bash
 $ go test ./internal/diff/
-ok  	github.com/perceptumx/percepta/internal/diff	0.002s
+ok  	github.com/Perceptax/percepta/internal/diff	0.002s
     ✓ TestCompare_NoChanges
     ✓ TestCompare_LEDAdded
     ✓ TestCompare_LEDRemoved
@@ -68,7 +68,7 @@ ok  	github.com/perceptumx/percepta/internal/diff	0.002s
     ✓ TestNormalizeBlinkHz
 
 $ go test ./internal/storage/
-ok  	github.com/perceptumx/percepta/internal/storage	0.010s
+ok  	github.com/Perceptax/percepta/internal/storage	0.010s
     ✓ TestSQLiteStorage_SaveAndQuery
     ✓ TestSQLiteStorage_QueryByFirmware
     ✓ TestSQLiteStorage_GetLatestForFirmware

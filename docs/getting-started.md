@@ -331,8 +331,8 @@ fi
 - Observation history querying
 
 **Join alpha testing:**
-- Report issues: [GitHub Issues](https://github.com/perceptumx/percepta/issues)
-- Share feedback: [GitHub Discussions](https://github.com/perceptumx/percepta/discussions)
+- Report issues: [GitHub Issues](https://github.com/Perceptax/percepta/issues)
+- Share feedback: [GitHub Discussions](https://github.com/Perceptax/percepta/discussions)
 
 ---
 

@@ -38,7 +38,7 @@ $ percepta diff fpga --from v1 --to v2
 **1. Install:**
 ```bash
 # Download binary from GitHub releases, or build from source:
-go install github.com/perceptumx/percepta/cmd/percepta@latest
+go install github.com/Perceptax/percepta/cmd/percepta@latest
 ```
 
 **2. Set API key:**
@@ -108,7 +108,7 @@ See [ROADMAP.md](.planning/ROADMAP.md) for future plans.
 
 ## License
 
-MIT — see [LICENSE](LICENSE)
+MIT License - see repository for details.
 
 ## Contributing
 

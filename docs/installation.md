@@ -6,7 +6,7 @@ Percepta is distributed as a standalone binary for Linux, macOS, and Windows. Ch
 
 **1. Download the latest release for your platform:**
 
-Visit [GitHub Releases](https://github.com/perceptumx/percepta/releases) and download the binary for your OS:
+Visit [GitHub Releases](https://github.com/Perceptax/percepta/releases) and download the binary for your OS:
 
 - **Linux (x86_64):** `percepta-linux-amd64.tar.gz`
 - **Linux (ARM64):** `percepta-linux-arm64.tar.gz`
@@ -68,7 +68,7 @@ brew install go
 **2. Clone the repository:**
 
 ```bash
-git clone https://github.com/perceptumx/percepta.git
+git clone https://github.com/Perceptax/percepta.git
 cd percepta
 ```
 
@@ -85,7 +85,7 @@ go build -o percepta ./cmd/percepta
 go install ./cmd/percepta
 
 # Or use go install directly:
-go install github.com/perceptumx/percepta/cmd/percepta@latest
+go install github.com/Perceptax/percepta/cmd/percepta@latest
 ```
 
 **5. Verify:**

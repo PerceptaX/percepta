@@ -355,8 +355,8 @@ $ ./test_phase3.sh
 
 ```bash
 $ go test ./internal/diff/ ./internal/storage/
-ok  	github.com/perceptumx/percepta/internal/diff	0.002s
-ok  	github.com/perceptumx/percepta/internal/storage	0.010s
+ok  	github.com/Perceptax/percepta/internal/diff	0.002s
+ok  	github.com/Perceptax/percepta/internal/storage	0.010s
 ```
 
 ## Summary
