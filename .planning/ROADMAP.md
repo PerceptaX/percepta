@@ -16,7 +16,7 @@ None
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [⏳] **Phase 1: Core + Vision** - Foundation types, SQLite storage, Claude Vision driver, basic observe command
+- [x] **Phase 1: Core + Vision** - Foundation types, in-memory storage, Claude Vision driver, observe command
 - [ ] **Phase 2: Assertions** - DSL parser, LED/display/timing assertions, assert command
 - [ ] **Phase 3: Diff + Firmware Tracking** - Firmware hash tracking, observation comparison, diff command
 - [ ] **Phase 4: Polish + Alpha** - Device management, documentation, installation, alpha release
@@ -37,7 +37,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 - [x] 01-01: Core types and in-memory storage (SQLite deferred)
 - [x] 01-02: Claude Vision driver and camera capture
-- [ ] 01-03: CLI observe command and output formatting
+- [x] 01-03: CLI observe command and output formatting
 
 ### Phase 2: Assertions
 **Goal**: percepta assert <device> <dsl> validates expected behavior deterministically
@@ -85,7 +85,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Core + Vision | 2/3 | In progress | - |
+| 1. Core + Vision | 3/3 | Complete | 2026-02-11 |
 | 2. Assertions | 0/2 | Not started | - |
 | 3. Diff + Firmware Tracking | 0/2 | Not started | - |
 | 4. Polish + Alpha | 0/2 | Not started | - |
