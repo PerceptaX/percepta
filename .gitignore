@@ -1,5 +1,5 @@
 # Binaries
-percepta
+/percepta
 /cmd/percepta/percepta
 
 # Go build artifacts
