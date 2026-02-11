@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Core + Vision** - Foundation types, in-memory storage, Claude Vision driver, observe command
 - [x] **Phase 2: Assertions** - DSL parser, LED/display/timing assertions, assert command
 - [x] **Phase 2.5: Multi-LED Signal Identity (INSERTED)** - Fix parser to extract ALL LEDs with deterministic names (LED1, LED2, LED3)
-- [ ] **Phase 3: Diff + Firmware Tracking** - Firmware hash tracking, observation comparison, diff command
+- [x] **Phase 3: Diff + Firmware Tracking** - SQLite storage, manual firmware tagging, observation comparison, diff command
 - [ ] **Phase 4: Polish + Alpha** - Device management, documentation, installation, alpha release
 
 ## Phase Details
@@ -94,8 +94,8 @@ Same LED count, same ordering, same names across runs.
 **Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: Firmware hash tracking and git integration (SQLite storage, firmware.GetGitHash(), config.FirmwarePath)
-- [ ] 03-02: Observation comparison and diff command (diff.CompareObservations(), CLI with --from/--to flags)
+- [x] 03-01: SQLite storage with manual firmware tagging (modernc.org/sqlite, config.Device.Firmware, no git integration)
+- [x] 03-02: Exact signal comparison and diff command (diff.Compare(), CLI with --from/--to flags, normalized BlinkHz)
 
 ### Phase 4: Polish + Alpha
 **Goal**: Ship to 10 alpha users with installation in <10 minutes
@@ -120,5 +120,5 @@ Phases execute in numeric order: 1 → 2 → 2.5 → 3 → 4
 | 1. Core + Vision | 3/3 | Complete | 2026-02-11 |
 | 2. Assertions | 2/2 | Complete | 2026-02-11 |
 | 2.5. Multi-LED Identity (INSERTED) | 1/1 | Complete | 2026-02-11 |
-| 3. Diff + Firmware Tracking | 0/2 | Not started | - |
+| 3. Diff + Firmware Tracking | 2/2 | Complete | 2026-02-11 |
 | 4. Polish + Alpha | 0/2 | Not started | - |

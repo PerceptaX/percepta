@@ -6,23 +6,23 @@ See: .planning/PROJECT.md (updated 2026-02-11)
 
 **Core value:** observe() must work reliably. If Percepta can accurately tell you "the LED is blinking at 1.98 Hz" with 95%+ confidence, everything else follows.
 
-**Current focus:** Phase 3 — Diff + Firmware Tracking
+**Current focus:** Phase 4 — Polish + Alpha
 
 ## Current Position
 
-Phase: 3 of 4 (Diff + Firmware Tracking)
+Phase: 4 of 4 (Polish + Alpha)
 Plan: 0 of 2 in current phase
-Status: Planning complete, ready to execute
-Last activity: 2026-02-11 — Planned Phase 3 (03-01, 03-02)
+Status: Phase 3 complete, ready for Phase 4
+Last activity: 2026-02-11 — Completed Phase 3 (SQLite storage + firmware diff)
 
-Progress: ░░░░░░░░░░ 0%
+Progress: ██████████ 100% (Phase 3 complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
-- Average duration: 2.0 min
-- Total execution time: 0.20 hours
+- Total plans completed: 8
+- Average duration: ~12 min (Phase 3 included comprehensive implementation)
+- Total execution time: 1.5 hours
 
 **By Phase:**
 
@@ -31,10 +31,11 @@ Progress: ░░░░░░░░░░ 0%
 | 1     | 3     | 8 min | 2.7 min  |
 | 2     | 2     | 3 min | 1.5 min  |
 | 2.5   | 1     | 1 min | 1.0 min  |
+| 3     | 2     | 75 min | 37.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-03 (2 min), 02-01 (2 min), 02-02 (1 min), 2.5-01 (1 min)
-- Trend: Highly efficient, surgical fixes very fast
+- Phase 3 was comprehensive (SQLite, diff logic, tests, docs)
+- Larger scope = longer execution, but all tests passing
 
 ## Accumulated Context
 
@@ -58,6 +59,10 @@ Recent decisions affecting current work:
 | 02    | 10% tolerance on blink rate, ±5 on RGB | Handles real-world sensor noise |
 | 2.5   | Index-based LED naming (LED1, LED2, LED3) | Establishes object permanence - stable identity enables diff |
 | 2.5   | No spatial tracking in MVP | Appearance order sufficient, spatial clustering can be added later |
+| 3     | Manual firmware tags (NOT git auto-integration) | Git coupling breaks FPGA workflows, binaries, CI, non-repo users |
+| 3     | Use modernc.org/sqlite (NOT mattn/go-sqlite3) | Pure Go, zero CGO dependencies, maintains cross-platform architecture |
+| 3     | Exact diff (NO tolerances except BlinkHz normalization) | Assertions handle fuzz, diff must be deterministic |
+| 3     | Storage construction in cmd layer | pkg/percepta stays framework-agnostic with StorageDriver interface |
 
 ### Deferred Issues
 
@@ -73,6 +78,6 @@ None - Phase 2.5 blocking issue resolved. Parser now assigns stable LED identiti
 
 ## Session Continuity
 
-Last session: 2026-02-11T17:45:00Z
-Stopped at: Planned Phase 3 - ready to execute 03-01-PLAN.md
+Last session: 2026-02-11T23:30:00Z
+Stopped at: Phase 3 complete - ready for Phase 4 (Polish + Alpha)
 Resume file: None
