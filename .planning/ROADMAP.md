@@ -108,7 +108,7 @@ Plans:
 
 Plans:
 - [x] 04-01: Device management CLI (device list/add/set-firmware)
-- [ ] 04-02: Documentation, Homebrew formula, alpha release
+- [x] 04-02: Documentation, build script, alpha release
 
 ## Progress
 
@@ -121,4 +121,4 @@ Phases execute in numeric order: 1 → 2 → 2.5 → 3 → 4
 | 2. Assertions | 2/2 | Complete | 2026-02-11 |
 | 2.5. Multi-LED Identity (INSERTED) | 1/1 | Complete | 2026-02-11 |
 | 3. Diff + Firmware Tracking | 2/2 | Complete | 2026-02-11 |
-| 4. Polish + Alpha | 1/2 | In progress | - |
+| 4. Polish + Alpha | 2/2 | Complete | 2026-02-12 |
