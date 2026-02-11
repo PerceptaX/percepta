@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Core + Vision** - Foundation types, in-memory storage, Claude Vision driver, observe command
 - [x] **Phase 2: Assertions** - DSL parser, LED/display/timing assertions, assert command
-- [ ] **Phase 2.5: Multi-LED Signal Identity (INSERTED)** - Fix parser to extract ALL LEDs with deterministic names (LED1, LED2, LED3)
+- [x] **Phase 2.5: Multi-LED Signal Identity (INSERTED)** - Fix parser to extract ALL LEDs with deterministic names (LED1, LED2, LED3)
 - [ ] **Phase 3: Diff + Firmware Tracking** - Firmware hash tracking, observation comparison, diff command
 - [ ] **Phase 4: Polish + Alpha** - Device management, documentation, installation, alpha release
 
@@ -87,15 +87,15 @@ Same LED count, same ordering, same names across runs.
 ### Phase 3: Diff + Firmware Tracking
 **Goal**: percepta diff --from X --to Y compares behavior across firmware versions
 
-**Depends on**: Phase 2 (needs observations + assertions)
+**Depends on**: Phase 2 (needs observations + assertions), Phase 2.5 (needs stable signal identity)
 
-**Research**: Unlikely (query patterns on existing SQLite schema)
+**Research**: None (straightforward SQLite + git integration)
 
 **Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: Firmware hash tracking and git integration
-- [ ] 03-02: Observation comparison and diff command
+- [ ] 03-01: Firmware hash tracking and git integration (SQLite storage, firmware.GetGitHash(), config.FirmwarePath)
+- [ ] 03-02: Observation comparison and diff command (diff.CompareObservations(), CLI with --from/--to flags)
 
 ### Phase 4: Polish + Alpha
 **Goal**: Ship to 10 alpha users with installation in <10 minutes
