@@ -12,3 +12,10 @@ type CameraDriver interface {
 type VisionDriver interface {
 	Observe(deviceID string, frame []byte) (*Observation, error)
 }
+
+// StorageDriver persists observations
+type StorageDriver interface {
+	Save(obs Observation) error
+	Query(deviceID string, limit int) ([]Observation, error)
+	Count() int
+}

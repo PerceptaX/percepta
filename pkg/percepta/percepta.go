@@ -5,17 +5,16 @@ import (
 
 	"github.com/perceptumx/percepta/internal/camera"
 	"github.com/perceptumx/percepta/internal/core"
-	"github.com/perceptumx/percepta/internal/storage"
 	"github.com/perceptumx/percepta/internal/vision"
 )
 
 type Core struct {
 	camera  core.CameraDriver
 	vision  core.VisionDriver
-	storage *storage.MemoryStorage
+	storage core.StorageDriver
 }
 
-func NewCore(cameraPath string) (*Core, error) {
+func NewCore(cameraPath string, storage core.StorageDriver) (*Core, error) {
 	// Initialize camera driver (Linux V4L2 for now)
 	cameraDriver := camera.NewV4L2Camera(cameraPath)
 
@@ -25,13 +24,10 @@ func NewCore(cameraPath string) (*Core, error) {
 		return nil, fmt.Errorf("vision init failed: %w", err)
 	}
 
-	// Initialize in-memory storage
-	storageDriver := storage.NewMemoryStorage()
-
 	return &Core{
 		camera:  cameraDriver,
 		vision:  visionDriver,
-		storage: storageDriver,
+		storage: storage,
 	}, nil
 }
 
@@ -54,10 +50,8 @@ func (c *Core) Observe(deviceID string) (*core.Observation, error) {
 		return nil, fmt.Errorf("vision analysis failed: %w", err)
 	}
 
-	// Save to storage
-	if err := c.storage.Save(*obs); err != nil {
-		return nil, fmt.Errorf("storage failed: %w", err)
-	}
+	// Note: firmware tag injection and storage save happens in cmd layer
+	// This keeps the core framework-agnostic
 
 	return obs, nil
 }

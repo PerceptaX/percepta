@@ -20,6 +20,7 @@ type VisionConfig struct {
 type DeviceConfig struct {
 	Type     string `mapstructure:"type"`
 	CameraID string `mapstructure:"camera_id"`
+	Firmware string `mapstructure:"firmware"`
 }
 
 func Load() (*Config, error) {

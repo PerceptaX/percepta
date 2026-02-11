@@ -6,6 +6,7 @@ import (
 
 	"github.com/perceptumx/percepta/internal/assertions"
 	"github.com/perceptumx/percepta/internal/config"
+	"github.com/perceptumx/percepta/internal/storage"
 	"github.com/perceptumx/percepta/pkg/percepta"
 	"github.com/spf13/cobra"
 )
@@ -35,13 +36,22 @@ func runAssert(cmd *cobra.Command, args []string) error {
 	}
 
 	cameraPath := "/dev/video0"
+	firmwareTag := ""
 	if deviceCfg, ok := cfg.Devices[deviceID]; ok {
 		if deviceCfg.CameraID != "" {
 			cameraPath = deviceCfg.CameraID
 		}
+		firmwareTag = deviceCfg.Firmware
 	}
 
-	perceptaCore, err := percepta.NewCore(cameraPath)
+	// Initialize SQLite storage
+	sqliteStorage, err := storage.NewSQLiteStorage()
+	if err != nil {
+		return fmt.Errorf("storage init failed: %w", err)
+	}
+	defer sqliteStorage.Close()
+
+	perceptaCore, err := percepta.NewCore(cameraPath, sqliteStorage)
 	if err != nil {
 		return err
 	}
@@ -51,6 +61,12 @@ func runAssert(cmd *cobra.Command, args []string) error {
 	obs, err := perceptaCore.Observe(deviceID)
 	if err != nil {
 		return err
+	}
+
+	// Inject firmware tag and save
+	obs.FirmwareHash = firmwareTag
+	if err := sqliteStorage.Save(*obs); err != nil {
+		return fmt.Errorf("failed to save observation: %w", err)
 	}
 
 	// Evaluate assertion

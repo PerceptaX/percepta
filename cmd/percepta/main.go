@@ -23,4 +23,5 @@ func main() {
 func init() {
 	rootCmd.AddCommand(observeCmd)
 	rootCmd.AddCommand(assertCmd)
+	rootCmd.AddCommand(diffCmd)
 }

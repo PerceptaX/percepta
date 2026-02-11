@@ -7,6 +7,7 @@ import (
 
 	"github.com/perceptumx/percepta/internal/config"
 	"github.com/perceptumx/percepta/internal/core"
+	"github.com/perceptumx/percepta/internal/storage"
 	"github.com/perceptumx/percepta/pkg/percepta"
 	"github.com/spf13/cobra"
 )
@@ -28,16 +29,25 @@ func runObserve(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("config load failed: %w", err)
 	}
 
-	// Get camera path for device
+	// Get camera path and firmware tag for device
 	cameraPath := "/dev/video0" // Default
+	firmwareTag := ""
 	if deviceCfg, ok := cfg.Devices[deviceID]; ok {
 		if deviceCfg.CameraID != "" {
 			cameraPath = deviceCfg.CameraID
 		}
+		firmwareTag = deviceCfg.Firmware
 	}
 
-	// Initialize Core
-	perceptaCore, err := percepta.NewCore(cameraPath)
+	// Initialize SQLite storage
+	sqliteStorage, err := storage.NewSQLiteStorage()
+	if err != nil {
+		return fmt.Errorf("storage init failed: %w", err)
+	}
+	defer sqliteStorage.Close()
+
+	// Initialize Core with storage
+	perceptaCore, err := percepta.NewCore(cameraPath, sqliteStorage)
 	if err != nil {
 		return err
 	}
@@ -47,6 +57,14 @@ func runObserve(cmd *cobra.Command, args []string) error {
 	obs, err := perceptaCore.Observe(deviceID)
 	if err != nil {
 		return err
+	}
+
+	// Inject firmware tag
+	obs.FirmwareHash = firmwareTag
+
+	// Save observation with firmware tag
+	if err := sqliteStorage.Save(*obs); err != nil {
+		return fmt.Errorf("failed to save observation: %w", err)
 	}
 
 	// Format output
