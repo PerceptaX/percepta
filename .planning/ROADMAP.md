@@ -36,7 +36,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 - [x] 01-01: Core types and in-memory storage (SQLite deferred)
-- [ ] 01-02: Claude Vision driver and camera capture
+- [x] 01-02: Claude Vision driver and camera capture
 - [ ] 01-03: CLI observe command and output formatting
 
 ### Phase 2: Assertions
@@ -85,7 +85,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Core + Vision | 1/3 | In progress | - |
+| 1. Core + Vision | 2/3 | In progress | - |
 | 2. Assertions | 0/2 | Not started | - |
 | 3. Diff + Firmware Tracking | 0/2 | Not started | - |
 | 4. Polish + Alpha | 0/2 | Not started | - |
