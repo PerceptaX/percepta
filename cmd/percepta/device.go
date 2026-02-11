@@ -32,9 +32,18 @@ var deviceAddCmd = &cobra.Command{
 	RunE:  runDeviceAdd,
 }
 
+var deviceSetFirmwareCmd = &cobra.Command{
+	Use:   "set-firmware <device> <firmware>",
+	Short: "Update firmware tag for a device",
+	Long:  "Sets the firmware version tag for an existing device.",
+	Args:  cobra.ExactArgs(2),
+	RunE:  runDeviceSetFirmware,
+}
+
 func init() {
 	deviceCmd.AddCommand(deviceListCmd)
 	deviceCmd.AddCommand(deviceAddCmd)
+	deviceCmd.AddCommand(deviceSetFirmwareCmd)
 }
 
 func runDeviceList(cmd *cobra.Command, args []string) error {
@@ -118,6 +127,43 @@ func runDeviceAdd(cmd *cobra.Command, args []string) error {
 	}
 
 	fmt.Printf("\n✓ Device '%s' added successfully\n", deviceName)
+	return nil
+}
+
+func runDeviceSetFirmware(cmd *cobra.Command, args []string) error {
+	deviceName := args[0]
+	newFirmware := args[1]
+
+	// Load existing config
+	cfg, err := config.Load()
+	if err != nil {
+		return fmt.Errorf("config load failed: %w", err)
+	}
+
+	// Check if device exists
+	dev, exists := cfg.Devices[deviceName]
+	if !exists {
+		return fmt.Errorf("Device '%s' not found. Use 'percepta device list' to see all devices.", deviceName)
+	}
+
+	oldFirmware := dev.Firmware
+
+	// Update firmware
+	dev.Firmware = newFirmware
+	cfg.Devices[deviceName] = dev
+
+	// Save config
+	if err := saveConfig(cfg); err != nil {
+		return fmt.Errorf("failed to save config: %w", err)
+	}
+
+	// Show confirmation
+	if oldFirmware == "" {
+		fmt.Printf("Set firmware for '%s': %s\n", deviceName, newFirmware)
+	} else {
+		fmt.Printf("Updated firmware for '%s': %s → %s\n", deviceName, oldFirmware, newFirmware)
+	}
+
 	return nil
 }
 
