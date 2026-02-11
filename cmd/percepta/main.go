@@ -1,7 +1,25 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+
+	"github.com/spf13/cobra"
+)
+
+var rootCmd = &cobra.Command{
+	Use:   "percepta",
+	Short: "Perception kernel for physical hardware",
+	Long:  "Percepta uses computer vision to observe, validate, and compare real-world hardware behavior.",
+}
 
 func main() {
-	fmt.Println("percepta v0.1.0-alpha")
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+}
+
+func init() {
+	rootCmd.AddCommand(observeCmd)
 }
