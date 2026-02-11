@@ -62,7 +62,11 @@ None yet.
 
 ### Blockers/Concerns
 
-None yet.
+**Phase 2.5 inserted (URGENT)**: Parser currently only extracts first LED match, causing unstable signal identity. This blocks Phase 3 diff functionality. Must fix multi-LED extraction with deterministic naming (LED1, LED2, LED3) before proceeding to Phase 3.
+
+### Roadmap Evolution
+
+- Phase 2.5 inserted after Phase 2: Fix multi-LED signal identity extraction (BLOCKING - required before Phase 3)
 
 ## Session Continuity
 
