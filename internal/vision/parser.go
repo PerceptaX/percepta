@@ -1,6 +1,7 @@
 package vision
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -23,11 +24,9 @@ func (p *RegexParser) Parse(text string) []core.Signal {
 	ledRegex := regexp.MustCompile(`(?i)([a-z0-9_-]+)?\s*(LED|led)(?:[^.]*)(on|off|blinking)(?:[^.]*?)(?:(\d+(?:\.\d+)?)\s*Hz)?`)
 	ledMatches := ledRegex.FindAllStringSubmatch(text, -1)
 
-	for _, match := range ledMatches {
-		name := match[1]
-		if name == "" {
-			name = "UNKNOWN"
-		}
+	for i, match := range ledMatches {
+		// Assign deterministic name by index (object permanence)
+		name := fmt.Sprintf("LED%d", i+1)
 		stateStr := strings.ToLower(match[3])
 
 		led := core.LEDSignal{
