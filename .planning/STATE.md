@@ -61,7 +61,7 @@ Recent decisions affecting current work:
 
 ### Deferred Issues
 
-None yet.
+- **ISS-001**: Single-frame capture misses blinking LEDs (discovered Phase 2.5). Object permanence IS working (LED1 = LED1), but single frame only captures LEDs that are ON at that instant. Multi-frame/video capture needed for complete LED detection. Deferred to post-Phase 3.
 
 ### Blockers/Concerns
 
