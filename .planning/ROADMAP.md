@@ -49,7 +49,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01: DSL parser and assertion types (LED, display, timing)
+- [x] 02-01: DSL parser and assertion types (LED, display, timing)
 - [ ] 02-02: CLI assert command and result formatting
 
 ### Phase 3: Diff + Firmware Tracking
@@ -86,6 +86,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Core + Vision | 3/3 | Complete | 2026-02-11 |
-| 2. Assertions | 0/2 | Not started | - |
+| 2. Assertions | 1/2 | In progress | - |
 | 3. Diff + Firmware Tracking | 0/2 | Not started | - |
 | 4. Polish + Alpha | 0/2 | Not started | - |

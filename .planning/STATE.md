@@ -6,32 +6,33 @@ See: .planning/PROJECT.md (updated 2026-02-11)
 
 **Core value:** observe() must work reliably. If Percepta can accurately tell you "the LED is blinking at 1.98 Hz" with 95%+ confidence, everything else follows.
 
-**Current focus:** Phase 1 — Core + Vision
+**Current focus:** Phase 2 — Assertions
 
 ## Current Position
 
-Phase: 1 of 4 (Core + Vision)
-Plan: 3 of 3 in current phase
-Status: Phase complete
-Last activity: 2026-02-11 — Completed 01-03-PLAN.md
+Phase: 2 of 4 (Assertions)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-02-11 — Completed 02-01-PLAN.md
 
-Progress: █████████░ 100%
+Progress: ████████░░ 80%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: 2.7 min
-- Total execution time: 0.13 hours
+- Total plans completed: 4
+- Average duration: 2.5 min
+- Total execution time: 0.17 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1     | 3     | 8 min | 2.7 min  |
+| 2     | 1     | 2 min | 2.0 min  |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2 min), 01-02 (4 min), 01-03 (2 min)
+- Last 5 plans: 01-01 (2 min), 01-02 (4 min), 01-03 (2 min), 02-01 (2 min)
 - Trend: Efficient execution
 
 ## Accumulated Context
@@ -50,6 +51,10 @@ Recent decisions affecting current work:
 | 01    | Regex for MVP signal parsing | Sufficient for LED/Display, replace when tool use stable |
 | 01    | Human-readable output over JSON | Better alpha UX, JSON export later |
 | 01    | Config file optional with defaults | Works without ~/.config/percepta/config.yaml |
+| 02    | Case-insensitive LED matching with fallback | Handles real-world hardware (addresses "UNKNOWN" LED from Phase 1) |
+| 02    | Display assertions use contains() not exact match | OCR is noisy, exact match too brittle |
+| 02    | Timing assertions fail gracefully if signal missing | Better UX than panic, clear message to user |
+| 02    | 10% tolerance on blink rate, ±5 on RGB | Handles real-world sensor noise |
 
 ### Deferred Issues
 
@@ -61,6 +66,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-11T18:22:58Z
-Stopped at: Completed 01-03-PLAN.md (Phase 1 complete)
+Last session: 2026-02-11T13:24:55Z
+Stopped at: Completed 02-01-PLAN.md (1 of 2 plans in Phase 2)
 Resume file: None
