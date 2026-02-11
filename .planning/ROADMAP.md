@@ -16,7 +16,7 @@ None
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Core + Vision** - Foundation types, SQLite storage, Claude Vision driver, basic observe command
+- [⏳] **Phase 1: Core + Vision** - Foundation types, SQLite storage, Claude Vision driver, basic observe command
 - [ ] **Phase 2: Assertions** - DSL parser, LED/display/timing assertions, assert command
 - [ ] **Phase 3: Diff + Firmware Tracking** - Firmware hash tracking, observation comparison, diff command
 - [ ] **Phase 4: Polish + Alpha** - Device management, documentation, installation, alpha release
@@ -35,7 +35,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 2-3 plans
 
 Plans:
-- [ ] 01-01: Core types and SQLite storage driver
+- [x] 01-01: Core types and in-memory storage (SQLite deferred)
 - [ ] 01-02: Claude Vision driver and camera capture
 - [ ] 01-03: CLI observe command and output formatting
 
@@ -85,7 +85,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Core + Vision | 0/3 | Not started | - |
+| 1. Core + Vision | 1/3 | In progress | - |
 | 2. Assertions | 0/2 | Not started | - |
 | 3. Diff + Firmware Tracking | 0/2 | Not started | - |
 | 4. Polish + Alpha | 0/2 | Not started | - |
