@@ -27,4 +27,5 @@ func init() {
 	rootCmd.AddCommand(deviceCmd)
 	rootCmd.AddCommand(styleCmd)
 	rootCmd.AddCommand(knowledgeCmd)
+	rootCmd.AddCommand(generateCmd)
 }
