@@ -11,7 +11,7 @@ None
 ## Milestones
 
 - ✅ **v1.0 Perception MVP** - Phases 1-4 (shipped 2026-02-12)
-- 🚧 **v2.0 Code Generation** - Phases 5-8 (in progress)
+- ✅ **v2.0 Code Generation** - Phases 5-8 (shipped 2026-02-13)
 
 ## Phases
 
@@ -96,11 +96,13 @@ Plans:
 
 </details>
 
-### 🚧 v2.0 Code Generation (In Progress)
+### ✅ v2.0 Code Generation (COMPLETE - Shipped 2026-02-13)
 
 **Milestone Goal:** Generate professional, hardware-validated firmware that passes code review. Only AI tool that delivers code that actually works on real hardware with BARR-C style compliance.
 
 **Key innovation:** Automatic validation loop (generate → flash → observe → validate) beats Embedder's "95% compiles, hope it works" with "100% works after validation."
+
+**Status:** All phases complete. Ready for public launch with "Better than Embedder" positioning.
 
 #### Phase 5: Style Infrastructure
 
@@ -190,7 +192,7 @@ Plans:
 
 Plans:
 - [x] 08-01: UX Polish + Documentation (error messages, help text, installation guide, getting started, examples)
-- [ ] 08-02: Marketing + Launch Campaign (positioning, demo materials, blog post, HN launch, metrics tracking)
+- [x] 08-02: Marketing + Launch Campaign (positioning, demo materials, blog post, HN launch, metrics tracking)
 
 ## Progress
 
@@ -208,4 +210,4 @@ Phases execute in numeric order: 1 → 2 → 2.5 → 3 → 4 → 5 → 6 → 6.1
 | 6. Knowledge Graphs | v2.0 | 2/2 | Complete | 2026-02-12 |
 | 6.1. Perception Enhancements (INSERTED) | v2.0 | 2/2 | Complete | 2026-02-13 |
 | 7. Code Generation Engine | v2.0 | 2/2 | Complete | 2026-02-13 |
-| 8. Public Launch | v2.0 | 1/2 | In Progress | - |
+| 8. Public Launch | v2.0 | 2/2 | Complete | 2026-02-13 |

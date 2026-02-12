@@ -6,16 +6,16 @@ See: .planning/PROJECT.md (updated 2026-02-11)
 
 **Core value:** observe() must work reliably. If Percepta can accurately tell you "the LED is blinking at 1.98 Hz" with 95%+ confidence, everything else follows.
 
-**Current focus:** Phase 8 — Public Launch (v2.0 Code Generation milestone COMPLETE)
+**Current focus:** v2.0 Code Generation milestone COMPLETE — Phase 8 complete, ready for public launch
 
 ## Current Position
 
-Phase: 8 of 8 (Public Launch)
-Plan: 1/2 complete
-Status: Phase 8 in progress (UX Polish complete, Marketing next)
-Last activity: 2026-02-12 — Plan 08-01 complete (UX Polish + Documentation)
+Phase: 8 of 8 (Public Launch) — COMPLETE
+Plan: 2/2 complete
+Status: Phase 8 complete, v2.0 milestone COMPLETE
+Last activity: 2026-02-13 — Plan 08-02 complete (Marketing + Launch Campaign)
 
-Progress: █████████░ 90% (8/9 phases complete, 1 phase in progress)
+Progress: ██████████ 100% (All phases complete, v2.0 ready for public launch)
 
 ## Performance Metrics
 
@@ -35,20 +35,21 @@ Progress: █████████░ 90% (8/9 phases complete, 1 phase in pr
 | 3     | 2     | 75 min | 37.5 min |
 | 4     | 2     | 7 min | 3.5 min  |
 
-**v2.0 Code Generation (IN PROGRESS):**
-- Total plans completed: 12
-- Status: Phase 5 complete, Phase 6 complete, Phase 6.1 complete, Phase 7 complete, Phase 8 in progress (1/2 plans)
-- Milestone progress: Core features complete, public launch in progress
+**v2.0 Code Generation (COMPLETE):**
+- Total plans completed: 14
+- Status: All phases complete (5, 6, 6.1, 7, 8)
+- Milestone: SHIPPED 2026-02-13
+- Total execution time: 4.6 hours
 
 **By Phase (v2.0):**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 5     | 2     | 90 min | 45 min   |
-| 6     | 2     | 150 min | 75 min   |
+| 5     | 2/2   | 90 min | 45 min   |
+| 6     | 2/2   | 150 min | 75 min   |
 | 6.1   | 2/2   | 90 min | 45 min   |
 | 7     | 2/2   | 80 min | 40 min   |
-| 8     | 1/2   | 17 min | 17 min   |
+| 8     | 2/2   | 29 min | 14.5 min |
 
 ## Accumulated Context
 
@@ -127,6 +128,12 @@ Historical decisions from v1.0:
 | 8     | Help text includes Examples section | Users learn by copy-paste; show exact commands to run |
 | 8     | Documentation organized by user journey | Installation → Getting Started → Commands → Examples → Configuration → Troubleshooting → API |
 | 8     | 25+ example workflows | Covers basic usage, firmware tracking, code generation, CI/CD, and advanced scenarios |
+| 8     | Marketing materials in docs/launch/ directory | Centralized location for all launch materials (user-specified) |
+| 8     | "Better than Embedder" positioning | Hardware validation + BARR-C compliance vs compilation-only tools |
+| 8     | Complement Embedder (not attack) | "Prototype with Embedder, productionize with Percepta" - builds credibility |
+| 8     | Honest benchmark reporting | Report real tradeoffs: 45s validated vs 10s unvalidated, but guaranteed working |
+| 8     | Launch timing: Tuesday-Thursday 9-11am PT | Optimal HN visibility, sustained engagement first 4 hours |
+| 8     | Metrics aligned with PRD Part VIII | 1500 WAU, $10K MRR, 200 paying customers at Month 12 |
 
 ### Deferred Issues
 
@@ -144,8 +151,9 @@ None - starting fresh with v2.0 milestone.
 
 ## Session Continuity
 
-Last session: 2026-02-13T04:00:00Z
-Stopped at: Phase 8 planned (2 plans created)
+Last session: 2026-02-13T04:57:00Z
+Stopped at: Phase 8 complete, v2.0 milestone COMPLETE
 Resume file: None
 
-**Next:** Execute Phase 8 Plan 08-01 (UX Polish + Documentation) - Error messages, help text, comprehensive docs
+**Next:** Execute public launch (merge to main, tag v2.0.0, post to HN/Reddit, monitor metrics)
+**Status:** Ready for immediate public launch - all materials prepared, documentation complete, CLI production-ready
