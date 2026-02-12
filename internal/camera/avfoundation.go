@@ -9,6 +9,8 @@ package camera
 #import <AVFoundation/AVFoundation.h>
 #import <CoreMedia/CoreMedia.h>
 #import <CoreVideo/CoreVideo.h>
+#import <objc/runtime.h>
+#import <objc/message.h>
 #include <stdlib.h>
 
 // Capture a single frame from the default camera
