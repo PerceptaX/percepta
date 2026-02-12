@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-02-11)
 ## Current Position
 
 Phase: 6.1 of 8 (Perception Enhancements - INSERTED)
-Plan: 6.1-01 of 2
+Plan: 6.1-02 of 2
 Status: Ready to execute
-Last activity: 2026-02-12 — Phase 6.1 planned (2 plans created)
+Last activity: 2026-02-12 — Plan 6.1-01 completed (Vision System Enhancements)
 
-Progress: ███████░░░ 67% (6/9 phases complete, 1 inserted)
+Progress: ███████░░░ 67% (6/9 phases complete, 1 inserted, phase 6.1 in progress)
 
 ## Performance Metrics
 
@@ -36,8 +36,8 @@ Progress: ███████░░░ 67% (6/9 phases complete, 1 inserted)
 | 4     | 2     | 7 min | 3.5 min  |
 
 **v2.0 Code Generation (IN PROGRESS):**
-- Total plans completed: 5
-- Status: Phase 5 complete, Phase 6 complete, Phase 6.1 planned
+- Total plans completed: 6
+- Status: Phase 5 complete, Phase 6 complete, Phase 6.1 in progress (1/2 plans complete)
 
 **By Phase (v2.0):**
 
@@ -45,6 +45,7 @@ Progress: ███████░░░ 67% (6/9 phases complete, 1 inserted)
 |-------|-------|-------|----------|
 | 5     | 2     | 90 min | 45 min   |
 | 6     | 2     | 150 min | 75 min   |
+| 6.1   | 1/2   | 45 min | 45 min   |
 
 ## Accumulated Context
 
@@ -94,10 +95,15 @@ Historical decisions from v1.0:
 | 6     | Mock embedder for testing (NewVectorStoreWithEmbedder) | Enables deterministic testing without API keys |
 | 6     | Confidence scoring = similarity + signal boost | Combines vector similarity with validation metadata |
 | 6     | CLI graceful degradation when OPENAI_API_KEY not set | Pattern storage works without vector store, semantic search fails gracefully |
+| 6.1   | Use Anthropic tool use for structured output | Deterministic LCD OCR extraction, eliminates regex brittleness |
+| 6.1   | Keep RegexParser as fallback | Graceful degradation when tool use fails, maintains robustness |
+| 6.1   | 5 frames over 1 second for multi-frame capture | Balances completeness (detects all LEDs) with latency (1s acceptable) |
+| 6.1   | Calibrate confidence dynamically | Adjust scores based on detection rate, color presence, text quality |
+| 6.1   | Blink frequency from transition count | Simple algorithm works for typical embedded LED rates (0.5-5 Hz) |
 
 ### Deferred Issues
 
-- **ISS-001**: Single-frame capture misses blinking LEDs (discovered Phase 2.5). Object permanence IS working (LED1 = LED1), but single frame only captures LEDs that are ON at that instant. Multi-frame/video capture needed for complete LED detection. Deferred to post-v2.0.
+- **ISS-001**: ✅ RESOLVED in Phase 6.1 Plan 01. Multi-frame capture (5 frames, 200ms interval) detects all LEDs including blinking ones. Object permanence maintained.
 
 ### Blockers/Concerns Carried Forward
 

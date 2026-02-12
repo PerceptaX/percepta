@@ -145,7 +145,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 6.1-01: Vision System Enhancements (LCD OCR, multi-frame capture, confidence)
+- [x] 6.1-01: Vision System Enhancements (LCD OCR, multi-frame capture, confidence)
 - [ ] 6.1-02: Data Stability (temporal smoothing, schema lock)
 
 **Why this was inserted:**
@@ -205,6 +205,6 @@ Phases execute in numeric order: 1 → 2 → 2.5 → 3 → 4 → 5 → 6 → 6.1
 | 4. Polish + Alpha | v1.0 | 2/2 | Complete | 2026-02-12 |
 | 5. Style Infrastructure | v2.0 | 2/2 | Complete | 2026-02-12 |
 | 6. Knowledge Graphs | v2.0 | 2/2 | Complete | 2026-02-12 |
-| 6.1. Perception Enhancements (INSERTED) | v2.0 | 0/2 | Planned | - |
+| 6.1. Perception Enhancements (INSERTED) | v2.0 | 1/2 | In Progress | - |
 | 7. Code Generation Engine | v2.0 | 0/2 | Planned | - |
 | 8. Public Launch | v2.0 | 0/? | Not started | - |
