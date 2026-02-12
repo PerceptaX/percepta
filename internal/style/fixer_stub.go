@@ -2,19 +2,16 @@
 
 package style
 
-import (
-	"fmt"
-)
+// StyleFixer stub for non-Linux platforms
+type StyleFixer struct{}
 
-// Fixer stub for non-Linux platforms
-type Fixer struct{}
-
-// NewFixer creates a stub fixer
-func NewFixer() *Fixer {
-	return &Fixer{}
+// NewStyleFixer creates a stub style fixer
+func NewStyleFixer() *StyleFixer {
+	return &StyleFixer{}
 }
 
-// Fix returns an error indicating style fixing is unavailable
-func (f *Fixer) Fix(violations []Violation, source []byte) ([]byte, error) {
-	return nil, fmt.Errorf("style fixing requires tree-sitter (Linux only)")
+// ApplyFixes returns the source unchanged on non-Linux platforms
+func (s *StyleFixer) ApplyFixes(violations []Violation, source []byte) ([]byte, []string) {
+	// No-op: return source unchanged
+	return source, nil
 }
