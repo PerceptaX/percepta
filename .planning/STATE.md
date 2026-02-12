@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-02-11)
 ## Current Position
 
 Phase: 5 of 8 (Style Infrastructure)
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-02-12 — Milestone v2.0 Code Generation created
+Plan: 05-01 complete
+Status: Ready for next plan
+Last activity: 2026-02-12 — Plan 05-01 (BARR-C rule engine) completed
 
-Progress: ░░░░░░░░░░ 0% (0/? plans in v2.0)
+Progress: ██░░░░░░░░ 20% (1/? plans in Phase 5)
 
 ## Performance Metrics
 
@@ -36,8 +36,14 @@ Progress: ░░░░░░░░░░ 0% (0/? plans in v2.0)
 | 4     | 2     | 7 min | 3.5 min  |
 
 **v2.0 Code Generation (IN PROGRESS):**
-- Total plans completed: 0
-- Status: Starting Phase 5
+- Total plans completed: 1
+- Status: Phase 5 in progress (plan 05-01 complete)
+
+**By Phase (v2.0):**
+
+| Phase | Plans | Total | Avg/Plan |
+|-------|-------|-------|----------|
+| 5     | 1     | 45 min | 45 min   |
 
 ## Accumulated Context
 
@@ -66,6 +72,10 @@ Historical decisions from v1.0:
 | 3     | Exact diff (NO tolerances except BlinkHz normalization) | Assertions handle fuzz, diff must be deterministic |
 | 3     | Storage construction in cmd layer | pkg/percepta stays framework-agnostic with StorageDriver interface |
 | 4     | Added yaml struct tags to DeviceConfig | Viper requires yaml tags for marshaling (separate from mapstructure tags) |
+| 5     | Use tree-sitter-c for Go instead of custom parser | Industry standard, robust, well-maintained C grammar |
+| 5     | Checker interface pattern for extensible rule system | Allows adding new checkers easily, follows Go interface idioms |
+| 5     | Global const uses UPPER_SNAKE, local const uses snake_case | BARR-C scope-aware naming - matches professional embedded coding standards |
+| 5     | Descriptive error messages with auto-fix suggestions | Actionable feedback better than generic violations |
 
 ### Deferred Issues
 
@@ -82,8 +92,8 @@ None - starting fresh with v2.0 milestone.
 
 ## Session Continuity
 
-Last session: 2026-02-12T22:41:00Z
-Stopped at: Milestone v2.0 Code Generation initialization
+Last session: 2026-02-12T23:45:00Z
+Stopped at: Plan 05-01 complete (BARR-C rule engine)
 Resume file: None
 
-**Ready to plan Phase 5: Style Infrastructure**
+**Next:** Phase 5 plan 05-02 (CLI + auto-fix) or continue Phase 5 planning
