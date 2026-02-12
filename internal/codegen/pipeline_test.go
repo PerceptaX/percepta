@@ -128,12 +128,12 @@ void LED_Toggle(void) {
 // TestGenerationResult_Fields tests GenerationResult structure
 func TestGenerationResult_Fields(t *testing.T) {
 	result := &GenerationResult{
-		Code:            "test code",
-		StyleCompliant:  true,
-		Violations:      []style.Violation{},
-		AutoFixed:       false,
-		PatternStored:   true,
-		IterationsUsed:  1,
+		Code:           "test code",
+		StyleCompliant: true,
+		Violations:     []style.Violation{},
+		AutoFixed:      false,
+		PatternStored:  true,
+		IterationsUsed: 1,
 	}
 
 	if result.Code != "test code" {

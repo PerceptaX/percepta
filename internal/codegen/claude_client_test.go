@@ -8,10 +8,10 @@ import (
 
 func TestNewClaudeClient(t *testing.T) {
 	tests := []struct {
-		name     string
-		apiKey   string
-		envKey   string
-		wantKey  string
+		name    string
+		apiKey  string
+		envKey  string
+		wantKey string
 	}{
 		{
 			name:    "explicit API key",
@@ -61,13 +61,13 @@ func TestExtractCode(t *testing.T) {
 		expected string
 	}{
 		{
-			name: "code with markdown blocks",
-			input: "```c\n#include <stdio.h>\n\nint main() {\n    return 0;\n}\n```",
+			name:     "code with markdown blocks",
+			input:    "```c\n#include <stdio.h>\n\nint main() {\n    return 0;\n}\n```",
 			expected: "#include <stdio.h>\n\nint main() {\n    return 0;\n}",
 		},
 		{
-			name: "code without language specifier",
-			input: "```\n#include <stdio.h>\n\nint main() {\n    return 0;\n}\n```",
+			name:     "code without language specifier",
+			input:    "```\n#include <stdio.h>\n\nint main() {\n    return 0;\n}\n```",
 			expected: "#include <stdio.h>\n\nint main() {\n    return 0;\n}",
 		},
 		{
@@ -76,8 +76,8 @@ func TestExtractCode(t *testing.T) {
 			expected: "#include <stdio.h>\n\nint main() {\n    return 0;\n}",
 		},
 		{
-			name: "code with explanatory text before",
-			input: "Here's the code:\n```c\nvoid LED_Blink(void) {\n}\n```",
+			name:     "code with explanatory text before",
+			input:    "Here's the code:\n```c\nvoid LED_Blink(void) {\n}\n```",
 			expected: "void LED_Blink(void) {\n}",
 		},
 		{

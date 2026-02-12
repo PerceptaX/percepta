@@ -18,7 +18,7 @@ type LEDSignal struct {
 	Confidence float64 `json:"confidence"`
 }
 
-func (l LEDSignal) Type() string        { return "led" }
+func (l LEDSignal) Type() string       { return "led" }
 func (l LEDSignal) State() interface{} { return l }
 
 // RGB color
@@ -35,7 +35,7 @@ type DisplaySignal struct {
 	Confidence float64 `json:"confidence"`
 }
 
-func (d DisplaySignal) Type() string        { return "display" }
+func (d DisplaySignal) Type() string       { return "display" }
 func (d DisplaySignal) State() interface{} { return d }
 
 // BootTimingSignal represents boot sequence timing
@@ -44,7 +44,7 @@ type BootTimingSignal struct {
 	Confidence float64 `json:"confidence"`
 }
 
-func (b BootTimingSignal) Type() string        { return "boot_timing" }
+func (b BootTimingSignal) Type() string       { return "boot_timing" }
 func (b BootTimingSignal) State() interface{} { return b }
 
 // Observation is a snapshot of hardware state at a point in time

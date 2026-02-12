@@ -19,12 +19,12 @@ type GenerationPipeline struct {
 
 // GenerationResult contains the results of generation and validation
 type GenerationResult struct {
-	Code            string
-	StyleCompliant  bool
-	Violations      []style.Violation
-	AutoFixed       bool
-	PatternStored   bool
-	IterationsUsed  int
+	Code           string
+	StyleCompliant bool
+	Violations     []style.Violation
+	AutoFixed      bool
+	PatternStored  bool
+	IterationsUsed int
 }
 
 // NewGenerationPipeline creates a new generation pipeline
