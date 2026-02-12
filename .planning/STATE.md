@@ -6,16 +6,16 @@ See: .planning/PROJECT.md (updated 2026-02-11)
 
 **Core value:** observe() must work reliably. If Percepta can accurately tell you "the LED is blinking at 1.98 Hz" with 95%+ confidence, everything else follows.
 
-**Current focus:** Phase 5 — Style Infrastructure (v2.0 Code Generation milestone)
+**Current focus:** Phase 6 — Knowledge Graphs (v2.0 Code Generation milestone)
 
 ## Current Position
 
-Phase: 5 of 8 (Style Infrastructure)
-Plan: 05-01 complete
-Status: Ready for next plan
-Last activity: 2026-02-12 — Plan 05-01 (BARR-C rule engine) completed
+Phase: 6 of 8 (Knowledge Graphs)
+Plan: Phase 5 complete, ready for Phase 6 planning
+Status: Ready for next phase
+Last activity: 2026-02-12 — Phase 5 (Style Infrastructure) completed
 
-Progress: ██░░░░░░░░ 20% (1/? plans in Phase 5)
+Progress: ██████░░░░ 62.5% (5/8 phases complete in v2.0)
 
 ## Performance Metrics
 
@@ -36,14 +36,14 @@ Progress: ██░░░░░░░░ 20% (1/? plans in Phase 5)
 | 4     | 2     | 7 min | 3.5 min  |
 
 **v2.0 Code Generation (IN PROGRESS):**
-- Total plans completed: 1
-- Status: Phase 5 in progress (plan 05-01 complete)
+- Total plans completed: 2
+- Status: Phase 5 complete, Phase 6 ready to start
 
 **By Phase (v2.0):**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 5     | 1     | 45 min | 45 min   |
+| 5     | 2     | 90 min | 45 min   |
 
 ## Accumulated Context
 
@@ -76,6 +76,11 @@ Historical decisions from v1.0:
 | 5     | Checker interface pattern for extensible rule system | Allows adding new checkers easily, follows Go interface idioms |
 | 5     | Global const uses UPPER_SNAKE, local const uses snake_case | BARR-C scope-aware naming - matches professional embedded coding standards |
 | 5     | Descriptive error messages with auto-fix suggestions | Actionable feedback better than generic violations |
+| 5     | Auto-fix only deterministic violations (naming, types) | Magic numbers and const correctness require manual review |
+| 5     | Apply fixes in category order (types first, naming second) | Avoids breaking cascading replacements |
+| 5     | Automatic #include <stdint.h> injection when types fixed | Ensures header available without manual intervention |
+| 5     | Standard linter output format (file:line:col severity [rule] message) | Enables CI integration, familiar to developers |
+| 5     | Directory traversal finds all .c and .h files recursively | Batch processing for entire codebases |
 
 ### Deferred Issues
 
@@ -92,8 +97,8 @@ None - starting fresh with v2.0 milestone.
 
 ## Session Continuity
 
-Last session: 2026-02-12T23:45:00Z
-Stopped at: Plan 05-01 complete (BARR-C rule engine)
+Last session: 2026-02-13T00:30:00Z
+Stopped at: Phase 5 complete (Style Infrastructure)
 Resume file: None
 
-**Next:** Phase 5 plan 05-02 (CLI + auto-fix) or continue Phase 5 planning
+**Next:** Phase 6 planning (Knowledge Graphs) - break down into plans

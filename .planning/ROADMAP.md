@@ -112,10 +112,11 @@ Plans:
 
 **Research topics**: BARR-C Embedded C Coding Standard rules, Go C parser libraries (tree-sitter vs custom), style violation auto-fix patterns, integration with code generation workflow
 
-**Plans**: 1+ plans (in progress)
+**Plans**: 2 plans
 
 Plans:
 - [x] 05-01: BARR-C rule engine with tree-sitter C parser
+- [x] 05-02: Auto-fix engine and percepta style-check CLI
 
 #### Phase 6: Knowledge Graphs
 
@@ -172,7 +173,7 @@ Phases execute in numeric order: 1 → 2 → 2.5 → 3 → 4 → 5 → 6 → 7 �
 | 2.5. Multi-LED Identity (INSERTED) | v1.0 | 1/1 | Complete | 2026-02-11 |
 | 3. Diff + Firmware Tracking | v1.0 | 2/2 | Complete | 2026-02-11 |
 | 4. Polish + Alpha | v1.0 | 2/2 | Complete | 2026-02-12 |
-| 5. Style Infrastructure | v2.0 | 1/? | In progress | - |
+| 5. Style Infrastructure | v2.0 | 2/2 | Complete | 2026-02-12 |
 | 6. Knowledge Graphs | v2.0 | 0/? | Not started | - |
 | 7. Code Generation Engine | v2.0 | 0/? | Not started | - |
 | 8. Public Launch | v2.0 | 0/? | Not started | - |
