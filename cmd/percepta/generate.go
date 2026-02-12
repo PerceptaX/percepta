@@ -6,7 +6,9 @@ import (
 	"strings"
 
 	"github.com/perceptumx/percepta/internal/codegen"
+	"github.com/perceptumx/percepta/internal/config"
 	"github.com/perceptumx/percepta/internal/knowledge"
+	"github.com/perceptumx/percepta/internal/style"
 	"github.com/spf13/cobra"
 )
 
@@ -58,9 +60,24 @@ Get your API key from: https://console.anthropic.com/
 Set it: export ANTHROPIC_API_KEY=your-key-here`)
 	}
 
+	// Get device ID from config (for pattern linkage)
+	cfg, err := config.Load()
+	deviceID := ""
+	if err == nil && cfg != nil && len(cfg.Devices) > 0 {
+		// Use first device from config
+		for id := range cfg.Devices {
+			deviceID = id
+			break
+		}
+	}
+	if deviceID == "" {
+		deviceID = "unknown-device" // Fallback for testing
+	}
+
 	fmt.Printf("Generating firmware...\n")
 	fmt.Printf("Spec: %s\n", spec)
-	fmt.Printf("Board: %s\n\n", boardType)
+	fmt.Printf("Board: %s\n", boardType)
+	fmt.Printf("Device: %s\n\n", deviceID)
 
 	// 1. Initialize pattern store
 	patternStore, err := knowledge.NewPatternStore()
@@ -84,49 +101,62 @@ Set it: export ANTHROPIC_API_KEY=your-key-here`)
 		fmt.Printf("Continuing with basic BARR-C requirements...\n\n")
 	}
 
-	// 3. Build prompt with patterns
+	// 3. Initialize pipeline
+	styleChecker := style.NewStyleChecker()
+	styleFixer := style.NewStyleFixer()
+	claudeClient := codegen.NewClaudeClient(apiKey)
 	promptBuilder := codegen.NewPromptBuilder(patternStore)
-	systemPrompt, err := promptBuilder.BuildSystemPrompt(spec, boardType)
+
+	pipeline := codegen.NewGenerationPipeline(
+		claudeClient,
+		promptBuilder,
+		styleChecker,
+		styleFixer,
+		patternStore,
+	)
+
+	// 4. Generate with validation
+	fmt.Printf("Generating and validating code...\n")
+	result, err := pipeline.Generate(spec, boardType, deviceID)
 	if err != nil {
-		return fmt.Errorf("failed to build prompt: %w", err)
+		return fmt.Errorf("generation failed: %w", err)
 	}
 
-	// 4. Generate code
-	fmt.Printf("Querying Claude API...\n")
-	client := codegen.NewClaudeClient(apiKey)
-	code, err := client.GenerateCode(spec, boardType, systemPrompt, 4096)
-	if err != nil {
-		return fmt.Errorf("code generation failed: %w", err)
-	}
+	fmt.Println()
 
-	lineCount := len(strings.Split(code, "\n"))
-	fmt.Printf("✓ Code generated (%d lines)\n\n", lineCount)
+	// 5. Print detailed report
+	codegen.PrintGenerationReport(result)
 
-	// 5. Output
+	fmt.Println()
+
+	// 6. Output code
 	if outputFile != "" {
-		err = os.WriteFile(outputFile, []byte(code), 0644)
+		err = os.WriteFile(outputFile, []byte(result.Code), 0644)
 		if err != nil {
 			return fmt.Errorf("failed to write file: %w", err)
 		}
-		fmt.Printf("Saved to: %s\n", outputFile)
+		fmt.Printf("\nSaved to: %s\n", outputFile)
 	} else {
 		fmt.Println("--- Generated Code ---")
-		fmt.Println(code)
+		fmt.Println(result.Code)
 		fmt.Println("--- End Generated Code ---")
 	}
 
-	// 6. Suggest next steps
+	// 7. Suggest next steps
 	fmt.Println("\n--- Next Steps ---")
 	if outputFile != "" {
-		fmt.Printf("1. Validate style: percepta style-check %s\n", outputFile)
-		fmt.Printf("2. Review code for correctness\n")
-		fmt.Printf("3. Flash to hardware and test\n")
-		fmt.Printf("4. Observe behavior: percepta observe <device>\n")
-		fmt.Printf("5. Store validated pattern: percepta knowledge store ...\n")
+		if !result.StyleCompliant {
+			fmt.Printf("1. Fix remaining violations manually\n")
+			fmt.Printf("2. Review code for correctness\n")
+			fmt.Printf("3. Flash to hardware and test\n")
+		} else {
+			fmt.Printf("1. Review code for correctness\n")
+			fmt.Printf("2. Flash to hardware and test\n")
+			fmt.Printf("3. Observe behavior: percepta observe %s\n", deviceID)
+		}
 	} else {
 		fmt.Printf("1. Save to file with --output flag\n")
-		fmt.Printf("2. Validate style: percepta style-check <file>\n")
-		fmt.Printf("3. Review, flash, and test on hardware\n")
+		fmt.Printf("2. Review and test on hardware\n")
 	}
 
 	return nil
