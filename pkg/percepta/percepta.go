@@ -67,10 +67,11 @@ func (c *Core) Observe(deviceID string) (*core.Observation, error) {
 	signals = append(signals, displays...)
 
 	obs := &core.Observation{
-		ID:        core.GenerateID(),
-		DeviceID:  deviceID,
-		Timestamp: time.Now(),
-		Signals:   signals,
+		SchemaVersion: core.CurrentSchemaVersion,
+		ID:            core.GenerateID(),
+		DeviceID:      deviceID,
+		Timestamp:     time.Now(),
+		Signals:       signals,
 	}
 
 	// Apply temporal smoothing before returning

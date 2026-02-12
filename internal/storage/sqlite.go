@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"time"
 
 	"github.com/perceptumx/percepta/internal/core"
 	_ "modernc.org/sqlite"
@@ -147,11 +146,9 @@ func (s *SQLiteStorage) GetLatestForFirmware(deviceID, firmware string) (*core.O
 
 	row := s.db.QueryRow(query, deviceID, firmware)
 
-	var obs core.Observation
-	var signalsJSON string
-	var timestamp string
+	var id, devID, fw, timestamp, signalsJSON string
 
-	err := row.Scan(&obs.ID, &obs.DeviceID, &obs.FirmwareHash, &timestamp, &signalsJSON)
+	err := row.Scan(&id, &devID, &fw, &timestamp, &signalsJSON)
 	if err == sql.ErrNoRows {
 		return nil, fmt.Errorf("no observation found for device %s with firmware %s", deviceID, firmware)
 	}
@@ -159,18 +156,23 @@ func (s *SQLiteStorage) GetLatestForFirmware(deviceID, firmware string) (*core.O
 		return nil, fmt.Errorf("failed to scan observation: %w", err)
 	}
 
-	// Parse timestamp
-	obs.Timestamp, err = time.Parse(time.RFC3339, timestamp)
+	// Build complete JSON for schema validation
+	fullJSON := fmt.Sprintf(`{
+		"id": "%s",
+		"device_id": "%s",
+		"firmware_hash": "%s",
+		"timestamp": "%s",
+		"signals": %s
+	}`, id, devID, fw, timestamp, signalsJSON)
+
+	// Validate and migrate if needed
+	validator := core.NewSchemaValidator()
+	obs, err := validator.ValidateAndMigrate([]byte(fullJSON))
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse timestamp: %w", err)
+		return nil, fmt.Errorf("schema validation failed: %w", err)
 	}
 
-	// Deserialize signals
-	if err := s.unmarshalSignals(signalsJSON, &obs.Signals); err != nil {
-		return nil, err
-	}
-
-	return &obs, nil
+	return obs, nil
 }
 
 // Count returns the total number of observations in the database
@@ -191,29 +193,37 @@ func (s *SQLiteStorage) Close() error {
 // scanObservations is a helper to scan multiple rows into observations
 func (s *SQLiteStorage) scanObservations(rows *sql.Rows) ([]core.Observation, error) {
 	var observations []core.Observation
+	validator := core.NewSchemaValidator()
 
 	for rows.Next() {
-		var obs core.Observation
-		var signalsJSON string
+		var rawData string
 		var timestamp string
 
-		err := rows.Scan(&obs.ID, &obs.DeviceID, &obs.FirmwareHash, &timestamp, &signalsJSON)
+		// Scan raw JSON data (we'll reconstruct the full JSON for validation)
+		var id, deviceID, firmware string
+		err := rows.Scan(&id, &deviceID, &firmware, &timestamp, &rawData)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan row: %w", err)
 		}
 
-		// Parse timestamp
-		obs.Timestamp, err = time.Parse(time.RFC3339, timestamp)
+		// Build complete JSON for schema validation
+		fullJSON := fmt.Sprintf(`{
+			"id": "%s",
+			"device_id": "%s",
+			"firmware_hash": "%s",
+			"timestamp": "%s",
+			"signals": %s
+		}`, id, deviceID, firmware, timestamp, rawData)
+
+		// Validate and migrate if needed
+		obs, err := validator.ValidateAndMigrate([]byte(fullJSON))
 		if err != nil {
-			return nil, fmt.Errorf("failed to parse timestamp: %w", err)
+			// Log invalid observation but continue (graceful degradation)
+			fmt.Printf("Warning: invalid observation schema (id=%s): %v\n", id, err)
+			continue
 		}
 
-		// Deserialize signals
-		if err := s.unmarshalSignals(signalsJSON, &obs.Signals); err != nil {
-			return nil, err
-		}
-
-		observations = append(observations, obs)
+		observations = append(observations, *obs)
 	}
 
 	if err := rows.Err(); err != nil {
