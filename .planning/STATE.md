@@ -6,16 +6,16 @@ See: .planning/PROJECT.md (updated 2026-02-11)
 
 **Core value:** observe() must work reliably. If Percepta can accurately tell you "the LED is blinking at 1.98 Hz" with 95%+ confidence, everything else follows.
 
-**Current focus:** Phase 6 — Knowledge Graphs (v2.0 Code Generation milestone)
+**Current focus:** Phase 7 — Code Generation Engine (v2.0 Code Generation milestone)
 
 ## Current Position
 
 Phase: 6 of 8 (Knowledge Graphs)
-Plan: 06-01 complete (Knowledge Graph Storage)
-Status: In progress - 1/2 plans complete
-Last activity: 2026-02-13 — Plan 06-01 completed (Knowledge Graph Storage)
+Plan: 06-02 complete (Semantic Search + CLI)
+Status: Complete - 2/2 plans complete
+Last activity: 2026-02-12 — Phase 6 completed (Knowledge Graphs)
 
-Progress: ██████░░░░ 62.5% (5/8 phases complete, Phase 6 in progress)
+Progress: ███████░░░ 75% (6/8 phases complete)
 
 ## Performance Metrics
 
@@ -36,15 +36,15 @@ Progress: ██████░░░░ 62.5% (5/8 phases complete, Phase 6 in 
 | 4     | 2     | 7 min | 3.5 min  |
 
 **v2.0 Code Generation (IN PROGRESS):**
-- Total plans completed: 3
-- Status: Phase 5 complete, Phase 6 in progress (1/2 plans done)
+- Total plans completed: 5
+- Status: Phase 5 complete, Phase 6 complete
 
 **By Phase (v2.0):**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 5     | 2     | 90 min | 45 min   |
-| 6     | 1/2   | 60 min | 60 min   |
+| 6     | 2     | 150 min | 75 min   |
 
 ## Accumulated Context
 
@@ -88,6 +88,12 @@ Historical decisions from v1.0:
 | 6     | Database path: ~/.local/share/percepta/knowledge.db (alongside percepta.db) | Separates knowledge from perception data |
 | 6     | PatternStore integrates StyleChecker, Graph, and SQLite storage | Single API for validated pattern storage |
 | 6     | Reject patterns without observation (hardware validation required) | Ensures patterns are hardware-verified, not theoretical |
+| 6     | In-memory vector store + SQLite persistence (pure Go, matches Phase 3 decision) | Ship faster without external services, can upgrade to Qdrant later |
+| 6     | OpenAI embeddings API (text-embedding-ada-002) for semantic similarity | Industry standard, proven accuracy, pluggable architecture for local models later |
+| 6     | Cosine similarity for pattern matching | Simple, effective, well-understood for MVP |
+| 6     | Mock embedder for testing (NewVectorStoreWithEmbedder) | Enables deterministic testing without API keys |
+| 6     | Confidence scoring = similarity + signal boost | Combines vector similarity with validation metadata |
+| 6     | CLI graceful degradation when OPENAI_API_KEY not set | Pattern storage works without vector store, semantic search fails gracefully |
 
 ### Deferred Issues
 
@@ -104,8 +110,8 @@ None - starting fresh with v2.0 milestone.
 
 ## Session Continuity
 
-Last session: 2026-02-13T00:30:00Z
-Stopped at: Phase 5 complete (Style Infrastructure)
+Last session: 2026-02-12T23:30:00Z
+Stopped at: Phase 6 complete (Knowledge Graphs)
 Resume file: None
 
-**Next:** Phase 6 planning (Knowledge Graphs) - break down into plans
+**Next:** Phase 7 planning (Code Generation Engine) - break down into plans
