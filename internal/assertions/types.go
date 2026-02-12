@@ -29,7 +29,7 @@ type LEDAssertion struct {
 }
 
 type LEDState struct {
-	On      *bool     // nil = don't care
+	On      *bool // nil = don't care
 	Color   *core.RGB
 	BlinkHz *float64
 }

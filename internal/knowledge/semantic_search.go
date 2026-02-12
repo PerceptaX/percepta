@@ -8,10 +8,10 @@ import (
 
 // PatternResult represents a pattern match with similarity and confidence
 type PatternResult struct {
-	Pattern    *PatternNode
+	Pattern     *PatternNode
 	Observation *core.Observation
-	Similarity float32 // 0.0 to 1.0, from cosine similarity
-	Confidence float32 // 0.0 to 1.0, adjusted for validation metadata
+	Similarity  float32 // 0.0 to 1.0, from cosine similarity
+	Confidence  float32 // 0.0 to 1.0, adjusted for validation metadata
 }
 
 // SearchSimilarPatterns finds patterns similar to the query using semantic search

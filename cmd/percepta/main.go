@@ -35,11 +35,8 @@ func main() {
 }
 
 func init() {
-	rootCmd.AddCommand(observeCmd)
-	rootCmd.AddCommand(assertCmd)
 	rootCmd.AddCommand(diffCmd)
 	rootCmd.AddCommand(deviceCmd)
-	rootCmd.AddCommand(styleCmd)
 	rootCmd.AddCommand(knowledgeCmd)
 	rootCmd.AddCommand(generateCmd)
 }
