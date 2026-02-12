@@ -82,3 +82,26 @@ func (v *ClaudeVision) Observe(deviceID string, frame []byte) (*core.Observation
 		Signals:   signals,
 	}, nil
 }
+
+// GetParser returns a parser that tries structured first, then falls back to regex
+func (v *ClaudeVision) GetParser() SignalParser {
+	return &fallbackParser{
+		primary:  v.structuredParser,
+		fallback: v.regexParser,
+	}
+}
+
+// fallbackParser tries primary parser first, then falls back to secondary
+type fallbackParser struct {
+	primary  SignalParser
+	fallback SignalParser
+}
+
+func (p *fallbackParser) Parse(frame []byte) ([]core.Signal, error) {
+	signals, err := p.primary.Parse(frame)
+	if err == nil && len(signals) > 0 {
+		return signals, nil
+	}
+
+	return p.fallback.Parse(frame)
+}
