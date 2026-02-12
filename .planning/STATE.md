@@ -6,16 +6,16 @@ See: .planning/PROJECT.md (updated 2026-02-11)
 
 **Core value:** observe() must work reliably. If Percepta can accurately tell you "the LED is blinking at 1.98 Hz" with 95%+ confidence, everything else follows.
 
-**Current focus:** Phase 6.1 — Perception Enhancements (v2.0 Code Generation milestone)
+**Current focus:** Phase 7 — Code Generation Engine (v2.0 Code Generation milestone)
 
 ## Current Position
 
-Phase: 6.1 of 8 (Perception Enhancements - INSERTED)
-Plan: 6.1-02 of 2
-Status: Ready to execute
-Last activity: 2026-02-12 — Plan 6.1-01 completed (Vision System Enhancements)
+Phase: 7 of 8 (Code Generation Engine)
+Plan: Ready to begin Phase 7
+Status: Phase 6.1 complete
+Last activity: 2026-02-13 — Phase 6.1 completed (Perception Enhancements)
 
-Progress: ███████░░░ 67% (6/9 phases complete, 1 inserted, phase 6.1 in progress)
+Progress: ████████░░ 78% (7/9 phases complete, ready for Phase 7)
 
 ## Performance Metrics
 
@@ -36,8 +36,8 @@ Progress: ███████░░░ 67% (6/9 phases complete, 1 inserted, p
 | 4     | 2     | 7 min | 3.5 min  |
 
 **v2.0 Code Generation (IN PROGRESS):**
-- Total plans completed: 6
-- Status: Phase 5 complete, Phase 6 complete, Phase 6.1 in progress (1/2 plans complete)
+- Total plans completed: 8
+- Status: Phase 5 complete, Phase 6 complete, Phase 6.1 complete, Phase 7 ready
 
 **By Phase (v2.0):**
 
@@ -45,7 +45,7 @@ Progress: ███████░░░ 67% (6/9 phases complete, 1 inserted, p
 |-------|-------|-------|----------|
 | 5     | 2     | 90 min | 45 min   |
 | 6     | 2     | 150 min | 75 min   |
-| 6.1   | 1/2   | 45 min | 45 min   |
+| 6.1   | 2/2   | 90 min | 45 min   |
 
 ## Accumulated Context
 
@@ -100,6 +100,9 @@ Historical decisions from v1.0:
 | 6.1   | 5 frames over 1 second for multi-frame capture | Balances completeness (detects all LEDs) with latency (1s acceptable) |
 | 6.1   | Calibrate confidence dynamically | Adjust scores based on detection rate, color presence, text quality |
 | 6.1   | Blink frequency from transition count | Simple algorithm works for typical embedded LED rates (0.5-5 Hz) |
+| 6.1   | 5-second time window with 2/3 agreement for temporal smoothing | Balances noise filtering with state change detection |
+| 6.1   | Schema version locked at 1.0.0 with migration framework | Future-proofs for schema changes, ensures compatibility |
+| 6.1   | Graceful degradation on storage/validation failures | Smoothing returns unfiltered, validation logs warnings but continues |
 
 ### Deferred Issues
 
@@ -117,8 +120,8 @@ None - starting fresh with v2.0 milestone.
 
 ## Session Continuity
 
-Last session: 2026-02-12T23:30:00Z
-Stopped at: Phase 6.1 planned (Perception Enhancements)
+Last session: 2026-02-13T00:45:00Z
+Stopped at: Phase 6.1 complete (Perception Enhancements)
 Resume file: None
 
-**Next:** Execute Plan 6.1-01 (Vision System Enhancements) - LCD OCR with structured output, multi-frame capture, confidence calibration
+**Next:** Phase 7 (Code Generation Engine) - LLM-based firmware generator with automatic hardware validation loop
