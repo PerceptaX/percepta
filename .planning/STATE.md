@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-02-11)
 ## Current Position
 
 Phase: 8 of 8 (Public Launch)
-Plan: Ready to execute (2 plans created)
-Status: Phase 8 planned (UX Polish + Marketing)
-Last activity: 2026-02-13 — Phase 8 planned (2 plans)
+Plan: 1/2 complete
+Status: Phase 8 in progress (UX Polish complete, Marketing next)
+Last activity: 2026-02-12 — Plan 08-01 complete (UX Polish + Documentation)
 
-Progress: █████████░ 88% (8/9 phases complete, 1 phase planned)
+Progress: █████████░ 90% (8/9 phases complete, 1 phase in progress)
 
 ## Performance Metrics
 
@@ -35,10 +35,10 @@ Progress: █████████░ 88% (8/9 phases complete, 1 phase plann
 | 3     | 2     | 75 min | 37.5 min |
 | 4     | 2     | 7 min | 3.5 min  |
 
-**v2.0 Code Generation (COMPLETE):**
-- Total plans completed: 11
-- Status: Phase 5 complete, Phase 6 complete, Phase 6.1 complete, Phase 7 complete
-- Milestone achieved: 2026-02-13
+**v2.0 Code Generation (IN PROGRESS):**
+- Total plans completed: 12
+- Status: Phase 5 complete, Phase 6 complete, Phase 6.1 complete, Phase 7 complete, Phase 8 in progress (1/2 plans)
+- Milestone progress: Core features complete, public launch in progress
 
 **By Phase (v2.0):**
 
@@ -48,6 +48,7 @@ Progress: █████████░ 88% (8/9 phases complete, 1 phase plann
 | 6     | 2     | 150 min | 75 min   |
 | 6.1   | 2/2   | 90 min | 45 min   |
 | 7     | 2/2   | 80 min | 40 min   |
+| 8     | 1/2   | 17 min | 17 min   |
 
 ## Accumulated Context
 
@@ -121,6 +122,11 @@ Historical decisions from v1.0:
 | 7     | Detailed validation reporting | Transparent reporting of validation steps - shows style status, auto-fix, pattern storage |
 | 7     | Iterate count = 1 for MVP | Future enhancement: multi-iteration refinement with feedback loop |
 | 7     | Re-check style after auto-fix | Shows remaining violations after fixes - user knows what needs manual attention |
+| 8     | UserError type with structured fields | Message/Suggestion/DocsURL pattern for consistent, actionable error messages |
+| 8     | Progress spinners use stderr | Avoids polluting stdout, enables piping command output |
+| 8     | Help text includes Examples section | Users learn by copy-paste; show exact commands to run |
+| 8     | Documentation organized by user journey | Installation → Getting Started → Commands → Examples → Configuration → Troubleshooting → API |
+| 8     | 25+ example workflows | Covers basic usage, firmware tracking, code generation, CI/CD, and advanced scenarios |
 
 ### Deferred Issues
 

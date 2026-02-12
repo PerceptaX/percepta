@@ -189,7 +189,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 08-01: UX Polish + Documentation (error messages, help text, installation guide, getting started, examples)
+- [x] 08-01: UX Polish + Documentation (error messages, help text, installation guide, getting started, examples)
 - [ ] 08-02: Marketing + Launch Campaign (positioning, demo materials, blog post, HN launch, metrics tracking)
 
 ## Progress
@@ -208,4 +208,4 @@ Phases execute in numeric order: 1 → 2 → 2.5 → 3 → 4 → 5 → 6 → 6.1
 | 6. Knowledge Graphs | v2.0 | 2/2 | Complete | 2026-02-12 |
 | 6.1. Perception Enhancements (INSERTED) | v2.0 | 2/2 | Complete | 2026-02-13 |
 | 7. Code Generation Engine | v2.0 | 2/2 | Complete | 2026-02-13 |
-| 8. Public Launch | v2.0 | 0/2 | Planned | - |
+| 8. Public Launch | v2.0 | 1/2 | In Progress | - |
