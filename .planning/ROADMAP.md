@@ -144,10 +144,11 @@ Plans:
 
 **Research topics**: Claude API fine-tuning vs LoRA adapters, prompt engineering for BARR-C compliance, validation feedback loop design (how to give LLM actionable error context), iteration limits and fallback strategies
 
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 07-01: TBD (run /gsd:plan-phase 7 to break down)
+- [ ] 07-01: Code Generator + Pattern Retrieval (Claude API, prompt engineering, CLI)
+- [ ] 07-02: Validation Pipeline (style validation, pattern storage)
 
 #### Phase 8: Public Launch
 
