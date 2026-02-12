@@ -2,22 +2,39 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/perceptumx/percepta/internal/config"
 	"github.com/perceptumx/percepta/internal/core"
+	perceptaErrors "github.com/perceptumx/percepta/internal/errors"
 	"github.com/perceptumx/percepta/internal/storage"
+	"github.com/perceptumx/percepta/internal/ui"
 	"github.com/perceptumx/percepta/pkg/percepta"
 	"github.com/spf13/cobra"
 )
 
 var observeCmd = &cobra.Command{
 	Use:   "observe <device>",
-	Short: "Capture current hardware state",
-	Long:  "Captures webcam frame, analyzes with Claude Vision, and stores observation.",
-	Args:  cobra.ExactArgs(1),
-	RunE:  runObserve,
+	Short: "Observe hardware state via computer vision",
+	Long: `Capture and analyze hardware behavior using vision.
+
+Percepta uses your camera to observe LED states, display content, and boot
+behavior. Observations are stored in SQLite for diffing and assertions.
+
+Examples:
+  # Observe device with default camera
+  percepta observe my-esp32
+
+  # Observe with specific camera
+  percepta observe my-esp32 --camera /dev/video0
+
+  # Observe for 10 seconds
+  percepta observe my-esp32 --duration 10s
+
+  # Save observation to file
+  percepta observe my-esp32 --output observation.json`,
+	Args: cobra.ExactArgs(1),
+	RunE: runObserve,
 }
 
 func runObserve(cmd *cobra.Command, args []string) error {
@@ -26,38 +43,48 @@ func runObserve(cmd *cobra.Command, args []string) error {
 	// Load config
 	cfg, err := config.Load()
 	if err != nil {
-		return fmt.Errorf("config load failed: %w", err)
+		return perceptaErrors.ConfigNotFound()
+	}
+
+	// Check if any devices configured
+	if len(cfg.Devices) == 0 {
+		return perceptaErrors.NoDevicesConfigured()
 	}
 
 	// Get camera path and firmware tag for device
 	cameraPath := "/dev/video0" // Default
 	firmwareTag := ""
-	if deviceCfg, ok := cfg.Devices[deviceID]; ok {
-		if deviceCfg.CameraID != "" {
-			cameraPath = deviceCfg.CameraID
-		}
-		firmwareTag = deviceCfg.Firmware
+	deviceCfg, ok := cfg.Devices[deviceID]
+	if !ok {
+		return perceptaErrors.DeviceNotFound(deviceID)
 	}
+
+	if deviceCfg.CameraID != "" {
+		cameraPath = deviceCfg.CameraID
+	}
+	firmwareTag = deviceCfg.Firmware
 
 	// Initialize SQLite storage
 	sqliteStorage, err := storage.NewSQLiteStorage()
 	if err != nil {
-		return fmt.Errorf("storage init failed: %w", err)
+		return perceptaErrors.StorageInitFailed(err)
 	}
 	defer sqliteStorage.Close()
 
 	// Initialize Core with storage
 	perceptaCore, err := percepta.NewCore(cameraPath, sqliteStorage)
 	if err != nil {
-		return err
+		return perceptaErrors.CameraNotFound(cameraPath)
 	}
 
-	// Capture observation
-	fmt.Fprintf(os.Stderr, "Observing %s via %s...\n", deviceID, cameraPath)
+	// Capture observation with spinner
+	spinner := ui.NewSpinner(fmt.Sprintf("Capturing frames from %s...", deviceID))
 	obs, err := perceptaCore.Observe(deviceID)
 	if err != nil {
-		return err
+		spinner.Stop(false)
+		return perceptaErrors.ObservationFailed(err)
 	}
+	spinner.Stop(true)
 
 	// Inject firmware tag
 	obs.FirmwareHash = firmwareTag

@@ -6,9 +6,9 @@ Issues logged during execution for future consideration.
 
 ## ISS-001: Single-frame capture misses blinking LEDs
 
-**Discovered:** Phase 2.5 (multi-LED identity verification)  
-**Severity:** Medium (limits observability but doesn't break core functionality)  
-**Status:** Deferred to post-Phase 3
+**Discovered:** Phase 2.5 (multi-LED identity verification)
+**Severity:** Medium (limits observability but doesn't break core functionality)
+**Status:** ✅ RESOLVED in Phase 6.1 Plan 01 (2026-02-12)
 
 **Problem:**
 Percepta captures a single frame, so only detects LEDs that are ON at that exact moment. LEDs blinking at different frequencies may be OFF during capture and become invisible.
@@ -34,8 +34,23 @@ Percepta captures a single frame, so only detects LEDs that are ON at that exact
 - Object permanence IS working (LED1 = LED1 consistently)
 - Can be addressed after core diff functionality proven
 
-**Workaround for now:**
-Test with boards where LEDs are solid or synchronously blinking, or accept that only visible LEDs are tracked.
+**Resolution (Phase 6.1-01):**
+- Multi-frame capture implemented: captures 5 frames over 1 second (200ms interval)
+- AggregateLEDs function combines LED detections across all frames
+- LED detected in ANY frame is included in final observation
+- Blink frequency calculated from on/off transitions (transition_count / 2)
+- Object permanence maintained: LED1 = LED1 consistently
+- Comprehensive test coverage for steady on/off and blinking states
+
+**Verification:**
+- Test `TestAggregateLEDs`: LED blinking in 1/3 frames correctly identified with 1 Hz
+- Test `TestLEDAggregator_Blinking`: 4 transitions → 2 Hz blink frequency
+- All vision tests passing
+
+**Impact:**
+- Vision system now detects ALL LEDs regardless of blink state
+- Ready for Phase 7 hardware validation loop
+- No workarounds needed
 
 ---
 

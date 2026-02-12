@@ -1,8 +1,8 @@
 # Percepta
 
-**Computer vision for hardware observability.** Watch your firmware run.
+**AI firmware development with hardware validation.** Generate code. Flash hardware. Validate behavior. All automated.
 
-Percepta uses Claude Vision to observe, validate, and compare physical hardware behavior (LEDs, displays, boot timing) without modifying firmware or hardware. Close the feedback loop in AI-driven firmware workflows — finally let Claude Code, Embedder, and other tools see what the hardware actually does.
+Percepta uses Claude Vision to observe, validate, and compare physical hardware behavior (LEDs, displays, boot timing) without modifying firmware or hardware. Generate BARR-C compliant firmware with AI, automatically validated on real hardware. Close the feedback loop in embedded development — the only AI tool that knows if your code actually works.
 
 ## What is Percepta?
 
@@ -63,18 +63,33 @@ $ percepta observe fpga
 
 **That's it.** Point your webcam at the hardware and run `observe`.
 
-## Commands
+## Core Features
 
-- **`percepta observe <device>`** — Capture current hardware state (LEDs, displays, boot timing)
-- **`percepta assert <device> <dsl>`** — Validate expected behavior using assertion DSL
-- **`percepta diff <device> --from <fw1> --to <fw2>`** — Compare behavior across firmware versions
-- **`percepta device list/add/set-firmware`** — Manage device configurations
+**Vision-Based Hardware Testing:**
+- **`percepta observe <device>`** — Capture hardware state (LEDs, displays, boot timing)
+- **`percepta assert <device> <expr>`** — Validate expected behavior
+- **`percepta diff <device> --from <fw1> --to <fw2>`** — Compare firmware versions
+
+**AI Code Generation:**
+- **`percepta generate <spec> --board <type>`** — Generate BARR-C compliant firmware
+- **`percepta style-check <file> --fix`** — Enforce embedded coding standards
+- **`percepta knowledge store/search`** — Manage validated pattern library
+
+**Device Management:**
+- **`percepta device add/list/set-firmware`** — Configure hardware devices
 
 ## Documentation
 
-- **[Installation](docs/installation.md)** — Binary installation, building from source, environment setup
-- **[Getting Started](docs/getting-started.md)** — Step-by-step walkthrough with examples
-- **[Example Configs](docs/examples/)** — ESP32, STM32, FPGA device configurations
+**Getting Started:**
+- **[Installation Guide](docs/installation.md)** — Binary installation, building from source, API keys
+- **[Getting Started](docs/getting-started.md)** — First observation in 10 minutes
+- **[Commands Reference](docs/commands.md)** — Complete command documentation
+
+**Advanced Usage:**
+- **[Examples](docs/examples.md)** — 25+ workflow examples (LED validation, CI/CD, code generation)
+- **[Configuration Guide](docs/configuration.md)** — Config file, camera setup, multi-device
+- **[Troubleshooting](docs/troubleshooting.md)** — Common issues and solutions
+- **[API Integration](docs/api-integration.md)** — Go library, CI/CD, MCP server (planned)
 
 ## Requirements
 
@@ -86,25 +101,49 @@ Supported platforms: Linux, macOS, Windows
 
 ## Status
 
-**Alpha** — Expect rough edges. Contributions welcome!
+**v2.0 - Code Generation** — Production-ready with hardware validation loop
 
-Current capabilities:
+**Perception Features:**
 - ✅ LED detection (state, color, blink frequency)
 - ✅ Display OCR (text extraction from OLED/LCD)
 - ✅ Boot timing measurement
-- ✅ DSL assertions (LED/display/timing validation)
-- ✅ Firmware diff (version comparison)
-- ✅ SQLite observation storage
+- ✅ Multi-frame capture (detects blinking LEDs)
+- ✅ Temporal smoothing (noise filtering)
+- ✅ Confidence calibration
 
-See [ROADMAP.md](.planning/ROADMAP.md) for future plans.
+**Code Generation Features:**
+- ✅ AI firmware generation (Claude Sonnet 4.5)
+- ✅ BARR-C style enforcement (professional embedded standards)
+- ✅ Auto-fix violations (naming, types)
+- ✅ Knowledge graph (validated patterns only)
+- ✅ Semantic search (find similar working code)
+- ✅ Hardware validation loop (generate → flash → observe → validate)
+
+**Storage & Testing:**
+- ✅ SQLite observation storage
+- ✅ Firmware version tracking
+- ✅ Behavioral diffing
+- ✅ Assertion DSL
+- ✅ CLI with progress indicators
+
+**Supported Boards:**
+- ESP32, STM32, Arduino, ATmega, Generic
+
+See [ROADMAP.md](.planning/ROADMAP.md) for Phase 8 (public launch) plans.
 
 ## Why Percepta?
 
-**The problem:** Embedded AI tools (Claude Code, Embedder) can generate firmware and control hardware, but cannot observe physical behavior. Developers manually validate by staring at LEDs and displays. Percepta closes this observability gap.
+**The problem:** AI tools generate embedded code, but you still manually validate by staring at LEDs. Code "compiles" doesn't mean it "works." No feedback loop between AI generation and hardware behavior.
 
-**The solution:** Computer vision + LLM perception = automated hardware observation. Point a camera at your hardware, get structured data about what it's actually doing.
+**The solution:** Percepta closes the loop. Generate firmware with AI, flash to hardware, automatically observe behavior, validate against requirements. Store only patterns that actually work. Build a knowledge base of hardware-validated code.
 
-**Target users:** Individual embedded developers (ESP32/STM32/FPGA) iterating on firmware at their desk. Comfortable with CLI tools, want fast feedback loops.
+**What makes it different:**
+- **Hardware validation:** Code isn't "done" until hardware behaves correctly
+- **BARR-C compliance:** Professional embedded coding standards, auto-fixed
+- **Knowledge graph:** Only stores patterns proven on real hardware
+- **Better than Embedder:** 100% works after validation vs "95% compiles, hope it works"
+
+**Target users:** Embedded developers (ESP32/STM32/FPGA) using AI code generation tools. Want fast iteration with confidence that code actually works.
 
 ## License
 

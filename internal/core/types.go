@@ -49,9 +49,13 @@ func (b BootTimingSignal) State() interface{} { return b }
 
 // Observation is a snapshot of hardware state at a point in time
 type Observation struct {
-	ID           string    `json:"id"`
-	DeviceID     string    `json:"device_id"`
-	FirmwareHash string    `json:"firmware_hash,omitempty"`
-	Timestamp    time.Time `json:"timestamp"`
-	Signals      []Signal  `json:"signals"`
+	SchemaVersion string    `json:"schema_version"` // Schema version for compatibility
+	ID            string    `json:"id"`
+	DeviceID      string    `json:"device_id"`
+	FirmwareHash  string    `json:"firmware_hash,omitempty"`
+	Timestamp     time.Time `json:"timestamp"`
+	Signals       []Signal  `json:"signals"`
 }
+
+// CurrentSchemaVersion is the current schema version for observations
+const CurrentSchemaVersion = "1.0.0"

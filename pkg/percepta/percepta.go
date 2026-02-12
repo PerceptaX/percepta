@@ -2,16 +2,19 @@ package percepta
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/perceptumx/percepta/internal/camera"
 	"github.com/perceptumx/percepta/internal/core"
+	"github.com/perceptumx/percepta/internal/filter"
 	"github.com/perceptumx/percepta/internal/vision"
 )
 
 type Core struct {
-	camera  core.CameraDriver
-	vision  core.VisionDriver
-	storage core.StorageDriver
+	camera   core.CameraDriver
+	vision   *vision.ClaudeVision
+	storage  core.StorageDriver
+	smoother *filter.TemporalSmoother
 }
 
 func NewCore(cameraPath string, storage core.StorageDriver) (*Core, error) {
@@ -25,9 +28,10 @@ func NewCore(cameraPath string, storage core.StorageDriver) (*Core, error) {
 	}
 
 	return &Core{
-		camera:  cameraDriver,
-		vision:  visionDriver,
-		storage: storage,
+		camera:   cameraDriver,
+		vision:   visionDriver,
+		storage:  storage,
+		smoother: filter.NewTemporalSmoother(storage),
 	}, nil
 }
 
@@ -38,22 +42,56 @@ func (c *Core) Observe(deviceID string) (*core.Observation, error) {
 	}
 	defer c.camera.Close()
 
-	// Capture frame
-	frame, err := c.camera.CaptureFrame()
+	// Multi-frame capture for complete LED detection (fixes ISS-001)
+	multiFrame := vision.NewMultiFrameCapture(c.camera, c.vision.GetParser())
+	frames, err := multiFrame.Capture()
 	if err != nil {
-		return nil, fmt.Errorf("camera capture failed: %w", err)
+		return nil, fmt.Errorf("multi-frame capture failed: %w", err)
 	}
 
-	// Analyze frame with vision
-	obs, err := c.vision.Observe(deviceID, frame)
-	if err != nil {
-		return nil, fmt.Errorf("vision analysis failed: %w", err)
+	if len(frames) == 0 {
+		return nil, fmt.Errorf("no frames captured")
 	}
 
-	// Note: firmware tag injection and storage save happens in cmd layer
-	// This keeps the core framework-agnostic
+	// Aggregate LED detections across frames
+	leds := vision.AggregateLEDs(frames)
 
-	return obs, nil
+	// Get display signals from most recent frame (displays don't need aggregation)
+	displays := getDisplaySignals(frames[len(frames)-1].Signals)
+
+	// Combine signals
+	var signals []core.Signal
+	for _, led := range leds {
+		signals = append(signals, led)
+	}
+	signals = append(signals, displays...)
+
+	obs := &core.Observation{
+		SchemaVersion: core.CurrentSchemaVersion,
+		ID:            core.GenerateID(),
+		DeviceID:      deviceID,
+		Timestamp:     time.Now(),
+		Signals:       signals,
+	}
+
+	// Apply temporal smoothing before returning
+	smoothedObs, err := c.smoother.Smooth(obs)
+	if err != nil {
+		// Log but don't fail observation (graceful degradation)
+		return obs, nil
+	}
+
+	return smoothedObs, nil
+}
+
+func getDisplaySignals(signals []core.Signal) []core.Signal {
+	var displays []core.Signal
+	for _, signal := range signals {
+		if _, ok := signal.(core.DisplaySignal); ok {
+			displays = append(displays, signal)
+		}
+	}
+	return displays
 }
 
 func (c *Core) ObservationCount() int {

@@ -1,23 +1,74 @@
 package vision
 
 import (
+	"context"
+	"encoding/base64"
 	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
 
+	"github.com/anthropics/anthropic-sdk-go"
+	"github.com/anthropics/anthropic-sdk-go/option"
 	"github.com/perceptumx/percepta/internal/core"
+	"os"
 )
 
 // RegexParser uses regex to extract signals from unstructured text
-// This is a temporary MVP implementation - will be replaced with structured output
+// This is a fallback implementation for when structured output fails
 type RegexParser struct{}
 
 func NewRegexParser() *RegexParser {
 	return &RegexParser{}
 }
 
-func (p *RegexParser) Parse(text string) []core.Signal {
+func (p *RegexParser) Parse(frame []byte) ([]core.Signal, error) {
+	// Call Claude Vision API with text prompt (no tool use)
+	apiKey := os.Getenv("ANTHROPIC_API_KEY")
+	if apiKey == "" {
+		return nil, fmt.Errorf("ANTHROPIC_API_KEY not set")
+	}
+
+	client := anthropic.NewClient(option.WithAPIKey(apiKey))
+
+	// Encode to base64
+	base64Frame := base64.StdEncoding.EncodeToString(frame)
+
+	// Create image block with base64 source
+	imageBlock := anthropic.NewImageBlockBase64(
+		string(anthropic.Base64ImageSourceMediaTypeImageJPEG),
+		base64Frame,
+	)
+
+	// Create text block with prompt
+	textBlock := anthropic.NewTextBlock(HardwarePrompt)
+
+	// Call Claude Vision API
+	message, err := client.Messages.New(context.Background(), anthropic.MessageNewParams{
+		MaxTokens: 1024,
+		Model:     anthropic.ModelClaudeSonnet4_5_20250929,
+		Messages: []anthropic.MessageParam{
+			anthropic.NewUserMessage(imageBlock, textBlock),
+		},
+	})
+
+	if err != nil {
+		return nil, fmt.Errorf("vision API call failed: %w", err)
+	}
+
+	// Extract text response
+	responseText := ""
+	for _, block := range message.Content {
+		if block.Type == "text" {
+			responseText += block.Text
+		}
+	}
+
+	// Parse text with regex
+	return p.parseText(responseText), nil
+}
+
+func (p *RegexParser) parseText(text string) []core.Signal {
 	var signals []core.Signal
 
 	// Parse LED signals

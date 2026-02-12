@@ -12,9 +12,27 @@ import (
 var diffCmd = &cobra.Command{
 	Use:   "diff <device> --from <firmware1> --to <firmware2>",
 	Short: "Compare hardware behavior across firmware versions",
-	Long:  "Compares observations between two firmware versions and shows exact differences.",
-	Args:  cobra.ExactArgs(1),
-	RunE:  runDiff,
+	Long: `Compares observations between two firmware versions and shows exact differences.
+
+Shows added, removed, and modified signals between firmware versions. Useful
+for detecting regressions, validating features, and understanding behavior changes.
+
+Examples:
+  # Compare two firmware versions
+  percepta diff my-esp32 --from v1.0 --to v1.1
+
+  # Check for regressions from baseline
+  percepta diff my-board --from baseline --to feature-branch
+
+  # Validate behavior change
+  percepta diff test-device --from before --to after
+
+Exit codes:
+  0 - No differences detected (behavior identical)
+  1 - Differences detected
+  2 - Error (device not found, firmware tag missing, etc.)`,
+	Args: cobra.ExactArgs(1),
+	RunE: runDiff,
 }
 
 var (
