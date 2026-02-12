@@ -9,7 +9,7 @@ func init() {
 	//
 	// ISSUE: Tests expect clean databases but get leftover data from previous tests
 	//   - TestGraph_*: Getting 3-8x more records than expected
-	//   - TestPatternStore_*: Getting 4-10x more records than expected  
+	//   - TestPatternStore_*: Getting 4-10x more records than expected
 	//   - TestVectorStore_*: Getting 5-22x more records than expected
 	//
 	// ROOT CAUSE: SQLite temp file cleanup behaves differently on Windows:
