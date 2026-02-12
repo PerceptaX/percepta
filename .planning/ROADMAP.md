@@ -128,10 +128,11 @@ Plans:
 
 **Research topics**: Neo4j vs alternatives for behavioral graph, Qdrant vs alternatives for vector search, embedding models for code similarity, knowledge graph schema design for hardware quirks
 
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 06-01: TBD (run /gsd:plan-phase 6 to break down)
+- [ ] 06-01: Knowledge Graph Storage (graph DB setup, PatternStore API)
+- [ ] 06-02: Semantic Search + CLI (vector store, semantic search, CLI commands)
 
 #### Phase 7: Code Generation Engine
 
