@@ -175,7 +175,7 @@ Phase 7's hardware validation loop requires robust perception. Current v1.0 perc
 **Plans**: 2 plans
 
 Plans:
-- [ ] 07-01: Code Generator + Pattern Retrieval (Claude API, prompt engineering, CLI)
+- [x] 07-01: Code Generator + Pattern Retrieval (Claude API, prompt engineering, CLI)
 - [ ] 07-02: Validation Pipeline (style validation, pattern storage)
 
 #### Phase 8: Public Launch
@@ -206,5 +206,5 @@ Phases execute in numeric order: 1 → 2 → 2.5 → 3 → 4 → 5 → 6 → 6.1
 | 5. Style Infrastructure | v2.0 | 2/2 | Complete | 2026-02-12 |
 | 6. Knowledge Graphs | v2.0 | 2/2 | Complete | 2026-02-12 |
 | 6.1. Perception Enhancements (INSERTED) | v2.0 | 2/2 | Complete | 2026-02-13 |
-| 7. Code Generation Engine | v2.0 | 0/2 | Planned | - |
+| 7. Code Generation Engine | v2.0 | 1/2 | In Progress | - |
 | 8. Public Launch | v2.0 | 0/? | Not started | - |
