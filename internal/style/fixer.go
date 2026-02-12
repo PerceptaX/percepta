@@ -151,36 +151,42 @@ func (s *StyleFixer) EnsureStdintHeader(source []byte, fixedRules []string) []by
 
 	// Find the first include statement or insert at the top
 	lines := bytes.Split(source, []byte("\n"))
-	insertIdx := 0
+	insertIdx := -1
+	lastIncludeIdx := -1
 
-	// Look for the first include statement
+	// Look for existing include statements
 	for i, line := range lines {
 		if bytes.Contains(line, []byte("#include")) {
-			insertIdx = i
-			break
+			lastIncludeIdx = i
 		}
-		// If we encounter non-comment, non-blank code, insert before it
-		trimmed := bytes.TrimSpace(line)
-		if len(trimmed) > 0 && !bytes.HasPrefix(trimmed, []byte("//")) && !bytes.HasPrefix(trimmed, []byte("/*")) {
-			insertIdx = i
-			break
+	}
+
+	// If there are existing includes, insert after the last one
+	if lastIncludeIdx >= 0 {
+		insertIdx = lastIncludeIdx + 1
+	} else {
+		// No existing includes - find first non-comment, non-blank line
+		for i, line := range lines {
+			trimmed := bytes.TrimSpace(line)
+			if len(trimmed) > 0 && !bytes.HasPrefix(trimmed, []byte("//")) && !bytes.HasPrefix(trimmed, []byte("/*")) {
+				insertIdx = i
+				break
+			}
+		}
+		// If we didn't find any code, insert at beginning
+		if insertIdx == -1 {
+			insertIdx = 0
 		}
 	}
 
 	// Insert the header
 	newLine := []byte("#include <stdint.h>")
 
-	// If inserting at beginning
-	if insertIdx == 0 {
-		result := append([][]byte{newLine}, lines...)
-		return bytes.Join(result, []byte("\n"))
-	}
-
-	// Insert after other includes
+	// Insert at the determined position
 	result := make([][]byte, 0, len(lines)+1)
-	result = append(result, lines[:insertIdx+1]...)
+	result = append(result, lines[:insertIdx]...)
 	result = append(result, newLine)
-	result = append(result, lines[insertIdx+1:]...)
+	result = append(result, lines[insertIdx:]...)
 
 	return bytes.Join(result, []byte("\n"))
 }
