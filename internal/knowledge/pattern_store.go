@@ -12,9 +12,10 @@ import (
 // PatternStore integrates perception, style checking, and knowledge graph
 // to store only validated firmware patterns
 type PatternStore struct {
-	graph      *Graph
-	styleCheck *style.StyleChecker
-	storage    *storage.SQLiteStorage
+	graph       *Graph
+	styleCheck  *style.StyleChecker
+	storage     *storage.SQLiteStorage
+	vectorStore *VectorStore // For semantic search (optional, initialize with InitializeVectorStore)
 }
 
 // NewPatternStore creates a new pattern store with all dependencies
@@ -128,6 +129,15 @@ func (p *PatternStore) StoreValidatedPattern(
 		return "", fmt.Errorf("failed to add VALIDATED_BY edge: %w", err)
 	}
 
+	// 7. Store embedding if vector store is initialized
+	if p.vectorStore != nil {
+		if err := p.vectorStore.StoreEmbedding(patternID, code); err != nil {
+			// Log error but don't fail the entire operation
+			// Vector store is optional for semantic search
+			fmt.Printf("Warning: failed to store embedding: %v\n", err)
+		}
+	}
+
 	return patternID, nil
 }
 
@@ -182,6 +192,11 @@ func (p *PatternStore) Stats() map[string]int {
 
 // Close closes all underlying connections
 func (p *PatternStore) Close() error {
+	if p.vectorStore != nil {
+		if err := p.vectorStore.Close(); err != nil {
+			return err
+		}
+	}
 	if err := p.graph.Close(); err != nil {
 		return err
 	}
