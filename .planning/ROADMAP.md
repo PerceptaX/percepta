@@ -131,7 +131,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 06-01: Knowledge Graph Storage (graph DB setup, PatternStore API)
+- [x] 06-01: Knowledge Graph Storage (graph DB setup, PatternStore API)
 - [ ] 06-02: Semantic Search + CLI (vector store, semantic search, CLI commands)
 
 #### Phase 7: Code Generation Engine
@@ -175,6 +175,6 @@ Phases execute in numeric order: 1 → 2 → 2.5 → 3 → 4 → 5 → 6 → 7 �
 | 3. Diff + Firmware Tracking | v1.0 | 2/2 | Complete | 2026-02-11 |
 | 4. Polish + Alpha | v1.0 | 2/2 | Complete | 2026-02-12 |
 | 5. Style Infrastructure | v2.0 | 2/2 | Complete | 2026-02-12 |
-| 6. Knowledge Graphs | v2.0 | 0/? | Not started | - |
+| 6. Knowledge Graphs | v2.0 | 1/2 | In progress | - |
 | 7. Code Generation Engine | v2.0 | 0/? | Not started | - |
 | 8. Public Launch | v2.0 | 0/? | Not started | - |

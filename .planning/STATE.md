@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-02-11)
 ## Current Position
 
 Phase: 6 of 8 (Knowledge Graphs)
-Plan: Phase 5 complete, ready for Phase 6 planning
-Status: Ready for next phase
-Last activity: 2026-02-12 — Phase 5 (Style Infrastructure) completed
+Plan: 06-01 complete (Knowledge Graph Storage)
+Status: In progress - 1/2 plans complete
+Last activity: 2026-02-13 — Plan 06-01 completed (Knowledge Graph Storage)
 
-Progress: ██████░░░░ 62.5% (5/8 phases complete in v2.0)
+Progress: ██████░░░░ 62.5% (5/8 phases complete, Phase 6 in progress)
 
 ## Performance Metrics
 
@@ -36,14 +36,15 @@ Progress: ██████░░░░ 62.5% (5/8 phases complete in v2.0)
 | 4     | 2     | 7 min | 3.5 min  |
 
 **v2.0 Code Generation (IN PROGRESS):**
-- Total plans completed: 2
-- Status: Phase 5 complete, Phase 6 ready to start
+- Total plans completed: 3
+- Status: Phase 5 complete, Phase 6 in progress (1/2 plans done)
 
 **By Phase (v2.0):**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 5     | 2     | 90 min | 45 min   |
+| 6     | 1/2   | 60 min | 60 min   |
 
 ## Accumulated Context
 
@@ -81,6 +82,12 @@ Historical decisions from v1.0:
 | 5     | Automatic #include <stdint.h> injection when types fixed | Ensures header available without manual intervention |
 | 5     | Standard linter output format (file:line:col severity [rule] message) | Enables CI integration, familiar to developers |
 | 5     | Directory traversal finds all .c and .h files recursively | Batch processing for entire codebases |
+| 6     | In-memory graph with SQLite persistence (pure Go, matches Phase 3 decision) | Avoids external services, maintains zero-dependency architecture |
+| 6     | Store only validated patterns (StyleCompliant=true AND has observation) | Quality moat - only code that works on real hardware |
+| 6     | Full relationship graph: spec->pattern->board->observation->style_result | Enables context injection for code generation |
+| 6     | Database path: ~/.local/share/percepta/knowledge.db (alongside percepta.db) | Separates knowledge from perception data |
+| 6     | PatternStore integrates StyleChecker, Graph, and SQLite storage | Single API for validated pattern storage |
+| 6     | Reject patterns without observation (hardware validation required) | Ensures patterns are hardware-verified, not theoretical |
 
 ### Deferred Issues
 
