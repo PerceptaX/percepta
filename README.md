@@ -69,17 +69,17 @@ $ percepta observe fpga
 
 ## Core Features
 
-**Vision-Based Hardware Testing:**
+**Vision-Based Hardware Testing:** *(Linux/macOS only)*
 - **`percepta observe <device>`** — Capture hardware state (LEDs, displays, boot timing)
 - **`percepta assert <device> <expr>`** — Validate expected behavior
 - **`percepta diff <device> --from <fw1> --to <fw2>`** — Compare firmware versions
 
-**AI Code Generation:**
+**AI Code Generation:** *(All platforms)*
 - **`percepta generate <spec> --board <type>`** — Generate BARR-C compliant firmware
-- **`percepta style-check <file> --fix`** — Enforce embedded coding standards
+- **`percepta style-check <file> --fix`** — Enforce embedded coding standards *(Linux only)*
 - **`percepta knowledge store/search`** — Manage validated pattern library
 
-**Device Management:**
+**Device Management:** *(All platforms)*
 - **`percepta device add/list/set-firmware`** — Configure hardware devices
 
 ## Documentation
@@ -98,10 +98,21 @@ $ percepta observe fpga
 ## Requirements
 
 - **Claude API key** (ANTHROPIC_API_KEY environment variable)
-- **Webcam** (USB camera or built-in, `/dev/video0` on Linux)
-- **Go 1.20+** (for building from source)
+- **Webcam** (USB camera or built-in, Linux/macOS only)
+- **Go 1.24+** (for building from source)
 
-Supported platforms: Linux, macOS, Windows
+## Platform Support
+
+| Feature | Linux | macOS | Windows |
+|---------|-------|-------|---------|
+| **Hardware Observation** (`observe`, `assert`) | ✅ V4L2 | ✅ AVFoundation | ❌ |
+| **Firmware Diffing** (`diff`) | ✅ | ✅ | ✅ |
+| **AI Code Generation** (`generate`) | ✅ | ✅ | ✅ |
+| **Style Checking** (`style-check`) | ✅ | ❌ | ❌ |
+| **Knowledge Management** | ✅ | ✅ | ✅ |
+| **Device Management** | ✅ | ✅ | ✅ |
+
+**Note:** Camera-based commands (`observe`, `assert`) require a webcam and are only available on Linux (V4L2) and macOS (AVFoundation). Style checking requires tree-sitter (Linux only). All other features work cross-platform.
 
 ## Status
 
