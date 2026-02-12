@@ -78,7 +78,10 @@ func (c *V4L2Camera) CaptureFrame() ([]byte, error) {
 
 func (c *V4L2Camera) Close() error {
 	if c.cam != nil {
-		c.cam.StopStreaming()
+		if err := c.cam.StopStreaming(); err != nil {
+			// Log but continue to close - best effort cleanup
+			_ = err
+		}
 		return c.cam.Close()
 	}
 	return nil

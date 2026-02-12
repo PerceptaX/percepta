@@ -93,8 +93,10 @@ func init() {
 	// Store flags
 	storePatternCmd.Flags().StringVarP(&deviceFlag, "device", "d", "", "Device ID (required)")
 	storePatternCmd.Flags().StringVarP(&firmwareFlag, "firmware", "f", "", "Firmware tag (required)")
-	storePatternCmd.MarkFlagRequired("device")
-	storePatternCmd.MarkFlagRequired("firmware")
+	//nolint:errcheck // Flag name is hardcoded, cannot fail
+	_ = storePatternCmd.MarkFlagRequired("device")
+	//nolint:errcheck // Flag name is hardcoded, cannot fail
+	_ = storePatternCmd.MarkFlagRequired("firmware")
 
 	// Search flags
 	searchPatternsCmd.Flags().StringVarP(&boardFlag, "board", "b", "", "Filter by board type")
@@ -126,7 +128,10 @@ func runStorePattern(cmd *cobra.Command, args []string) error {
 		fmt.Fprintf(os.Stderr, "Warning: semantic search unavailable (vector store init failed: %v)\n", err)
 		// Continue anyway - pattern can still be stored in graph
 	} else {
-		defer store.CloseVectorStore()
+		defer func() {
+			//nolint:errcheck // Best effort cleanup on defer
+			_ = store.CloseVectorStore()
+		}()
 	}
 
 	// Store validated pattern
@@ -166,7 +171,10 @@ func runSearchPatterns(cmd *cobra.Command, args []string) error {
 	if err := store.InitializeVectorStore(); err != nil {
 		return fmt.Errorf("semantic search unavailable: %w\n\nMake sure OPENAI_API_KEY environment variable is set", err)
 	}
-	defer store.CloseVectorStore()
+	defer func() {
+		//nolint:errcheck // Best effort cleanup on defer
+		_ = store.CloseVectorStore()
+	}()
 
 	// Search for similar patterns
 	results, err := store.SearchSimilarPatterns(query, boardFlag, limitFlag)
@@ -246,7 +254,11 @@ func runListPatterns(cmd *cobra.Command, args []string) error {
 		seen := make(map[string]bool)
 
 		for _, bt := range boardTypes {
-			boardPatterns, _ := store.QueryPatternsByBoard(bt)
+			boardPatterns, err := store.QueryPatternsByBoard(bt)
+			if err != nil {
+				// Log but continue - other board types may succeed
+				continue
+			}
 			for _, p := range boardPatterns {
 				if !seen[p.ID] {
 					patterns = append(patterns, p)

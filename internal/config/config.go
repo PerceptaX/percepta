@@ -38,7 +38,8 @@ func Load() (*Config, error) {
 	viper.SetDefault("vision.provider", "claude")
 
 	// Try to read config (OK if doesn't exist)
-	viper.ReadInConfig()
+	//nolint:errcheck // Config file is optional, error is intentionally ignored
+	_ = viper.ReadInConfig()
 
 	// Env var overrides
 	viper.SetEnvPrefix("PERCEPTA")

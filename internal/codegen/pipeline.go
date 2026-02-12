@@ -84,7 +84,11 @@ func (p *GenerationPipeline) Generate(
 		result.AutoFixed = true
 
 		// Re-check after fixes
-		violations, _ = p.styleChecker.CheckSource([]byte(code), "generated.c")
+		violations, err = p.styleChecker.CheckSource([]byte(code), "generated.c")
+		if err != nil {
+			// Log but continue - we have the fixed code anyway
+			log.Printf("Warning: style re-check failed: %v", err)
+		}
 		result.Violations = violations
 	}
 

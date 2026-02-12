@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -11,7 +12,6 @@ import (
 	"github.com/anthropics/anthropic-sdk-go"
 	"github.com/anthropics/anthropic-sdk-go/option"
 	"github.com/perceptumx/percepta/internal/core"
-	"os"
 )
 
 // RegexParser uses regex to extract signals from unstructured text

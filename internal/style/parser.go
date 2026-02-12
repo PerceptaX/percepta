@@ -1,6 +1,7 @@
 package style
 
 import (
+	"context"
 	"errors"
 
 	sitter "github.com/smacker/go-tree-sitter"
@@ -21,7 +22,10 @@ func NewParser() *Parser {
 
 // Parse parses C source code and returns the AST
 func (p *Parser) Parse(source []byte) (*sitter.Tree, error) {
-	tree := p.parser.Parse(nil, source)
+	tree, err := p.parser.ParseCtx(context.TODO(), nil, source)
+	if err != nil {
+		return nil, err
+	}
 	if tree == nil {
 		return nil, errors.New("failed to parse C code")
 	}
