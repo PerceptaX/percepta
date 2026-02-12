@@ -7,8 +7,10 @@ import (
 
 	"github.com/perceptumx/percepta/internal/codegen"
 	"github.com/perceptumx/percepta/internal/config"
+	perceptaErrors "github.com/perceptumx/percepta/internal/errors"
 	"github.com/perceptumx/percepta/internal/knowledge"
 	"github.com/perceptumx/percepta/internal/style"
+	"github.com/perceptumx/percepta/internal/ui"
 	"github.com/spf13/cobra"
 )
 
@@ -54,10 +56,12 @@ func runGenerate(cmd *cobra.Command, args []string) error {
 	// Check for API key
 	apiKey := os.Getenv("ANTHROPIC_API_KEY")
 	if apiKey == "" {
-		return fmt.Errorf(`ANTHROPIC_API_KEY not set
+		return perceptaErrors.MissingAPIKey("Anthropic")
+	}
 
-Get your API key from: https://console.anthropic.com/
-Set it: export ANTHROPIC_API_KEY=your-key-here`)
+	// Validate spec
+	if spec == "" {
+		return perceptaErrors.InvalidSpec(fmt.Errorf("specification cannot be empty"))
 	}
 
 	// Get device ID from config (for pattern linkage)
@@ -116,11 +120,13 @@ Set it: export ANTHROPIC_API_KEY=your-key-here`)
 	)
 
 	// 4. Generate with validation
-	fmt.Printf("Generating and validating code...\n")
+	spinner := ui.NewSpinner("Generating code with Claude...")
 	result, err := pipeline.Generate(spec, boardType, deviceID)
 	if err != nil {
-		return fmt.Errorf("generation failed: %w", err)
+		spinner.Stop(false)
+		return perceptaErrors.CodeGenerationFailed(err)
 	}
+	spinner.Stop(true)
 
 	fmt.Println()
 

@@ -23,7 +23,21 @@ The BARR-C standard defines professional coding practices for embedded systems:
 - const correctness for pointers
 
 Use --fix to auto-correct deterministic violations (naming, types).
-Manual review required for magic numbers and const correctness.`,
+Manual review required for magic numbers and const correctness.
+
+Examples:
+  # Check single file
+  percepta style-check led_blink.c
+
+  # Check entire directory
+  percepta style-check ./src
+
+  # Auto-fix violations
+  percepta style-check led_blink.c --fix
+
+Exit codes:
+  0 - No violations found (BARR-C compliant)
+  1 - Violations found`,
 	Args: cobra.ExactArgs(1),
 	RunE: runStyleCheck,
 }

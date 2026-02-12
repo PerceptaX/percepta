@@ -18,6 +18,16 @@ The knowledge graph stores only hardware-validated, BARR-C compliant patterns
 that have been tested on real devices. Semantic search finds similar patterns
 by code meaning, not just exact text matches.
 
+Examples:
+  # Store a validated pattern
+  percepta knowledge store "Blink LED" led.c --device my-esp32 --firmware v1.0
+
+  # Search for similar patterns
+  percepta knowledge search "button debounce" --board esp32
+
+  # List all patterns
+  percepta knowledge list
+
 Commands:
   store   - Store a validated pattern from a device observation
   search  - Search for similar patterns semantically
