@@ -6,13 +6,15 @@ import (
 
 	"github.com/perceptumx/percepta/internal/camera"
 	"github.com/perceptumx/percepta/internal/core"
+	"github.com/perceptumx/percepta/internal/filter"
 	"github.com/perceptumx/percepta/internal/vision"
 )
 
 type Core struct {
-	camera  core.CameraDriver
-	vision  *vision.ClaudeVision
-	storage core.StorageDriver
+	camera   core.CameraDriver
+	vision   *vision.ClaudeVision
+	storage  core.StorageDriver
+	smoother *filter.TemporalSmoother
 }
 
 func NewCore(cameraPath string, storage core.StorageDriver) (*Core, error) {
@@ -26,9 +28,10 @@ func NewCore(cameraPath string, storage core.StorageDriver) (*Core, error) {
 	}
 
 	return &Core{
-		camera:  cameraDriver,
-		vision:  visionDriver,
-		storage: storage,
+		camera:   cameraDriver,
+		vision:   visionDriver,
+		storage:  storage,
+		smoother: filter.NewTemporalSmoother(storage),
 	}, nil
 }
 
@@ -63,12 +66,21 @@ func (c *Core) Observe(deviceID string) (*core.Observation, error) {
 	}
 	signals = append(signals, displays...)
 
-	return &core.Observation{
+	obs := &core.Observation{
 		ID:        core.GenerateID(),
 		DeviceID:  deviceID,
 		Timestamp: time.Now(),
 		Signals:   signals,
-	}, nil
+	}
+
+	// Apply temporal smoothing before returning
+	smoothedObs, err := c.smoother.Smooth(obs)
+	if err != nil {
+		// Log but don't fail observation (graceful degradation)
+		return obs, nil
+	}
+
+	return smoothedObs, nil
 }
 
 func getDisplaySignals(signals []core.Signal) []core.Signal {
