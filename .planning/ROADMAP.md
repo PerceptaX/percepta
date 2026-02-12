@@ -2,27 +2,27 @@
 
 ## Overview
 
-Percepta's 8-week journey from zero to alpha builds the perception kernel in four phases: establish the vision foundation (Core + Vision), add validation capabilities (Assertions), enable version comparison (Diff + Firmware Tracking), and ship to alpha users (Polish + Alpha). Each phase delivers a complete, verifiable capability that builds toward the core value: reliable observe() accuracy.
+Percepta evolves from perception kernel (v1.0) to complete firmware platform (v2.0+). Phase 1 built vision-based hardware observation; Phase 2 adds AI code generation with hardware validation; Phase 3 scales to cloud platform with community features.
 
 ## Domain Expertise
 
 None
 
+## Milestones
+
+- ✅ **v1.0 Perception MVP** - Phases 1-4 (shipped 2026-02-12)
+- 🚧 **v2.0 Code Generation** - Phases 5-8 (in progress)
+
 ## Phases
+
+<details>
+<summary>✅ v1.0 Perception MVP (Phases 1-4) - SHIPPED 2026-02-12</summary>
 
 **Phase Numbering:**
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 Decimal phases appear between their surrounding integers in numeric order.
-
-- [x] **Phase 1: Core + Vision** - Foundation types, in-memory storage, Claude Vision driver, observe command
-- [x] **Phase 2: Assertions** - DSL parser, LED/display/timing assertions, assert command
-- [x] **Phase 2.5: Multi-LED Signal Identity (INSERTED)** - Fix parser to extract ALL LEDs with deterministic names (LED1, LED2, LED3)
-- [x] **Phase 3: Diff + Firmware Tracking** - SQLite storage, manual firmware tagging, observation comparison, diff command
-- [ ] **Phase 4: Polish + Alpha** - Device management, documentation, installation, alpha release
-
-## Phase Details
 
 ### Phase 1: Core + Vision
 **Goal**: percepta observe <device> works end-to-end with 95%+ accuracy on LED/display/boot signals
@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 **Research topics**: Anthropic Go SDK usage, Go webcam libraries (gocv vs native options), SQLite schema design for time-series observations
 
-**Plans**: 2-3 plans
+**Plans**: 3 plans
 
 Plans:
 - [x] 01-01: Core types and in-memory storage (SQLite deferred)
@@ -65,24 +65,8 @@ Plans:
 Plans:
 - [x] 2.5-01: Refactor parser to extract all LEDs with index-based naming
 
-**Why this is critical:**
-Currently the parser only extracts the first LED match, causing:
-- Different LED on each observe run (breaks diff)
-- Unstable signal identity (breaks assertions)
-- Cannot detect firmware regressions (breaks core value)
-
-Without stable signal identity, Phase 3 diff is meaningless. This is a **blocking architectural issue** that must be fixed before proceeding.
-
-**Expected outcome:**
-Running `percepta observe fpga` twice should produce:
-```
-Signals (3):
-LED1: blue blinking ~2Hz
-LED2: purple blinking ~0.8Hz
-LED3: red solid
-```
-
-Same LED count, same ordering, same names across runs.
+**Why this was critical:**
+Parser only extracted first LED match, causing unstable signal identity. Fixed to establish object permanence (LED1 = LED1 consistently), enabling reliable diff.
 
 ### Phase 3: Diff + Firmware Tracking
 **Goal**: percepta diff --from X --to Y compares behavior across firmware versions
@@ -110,15 +94,85 @@ Plans:
 - [x] 04-01: Device management CLI (device list/add/set-firmware)
 - [x] 04-02: Documentation, build script, alpha release
 
+</details>
+
+### 🚧 v2.0 Code Generation (In Progress)
+
+**Milestone Goal:** Generate professional, hardware-validated firmware that passes code review. Only AI tool that delivers code that actually works on real hardware with BARR-C style compliance.
+
+**Key innovation:** Automatic validation loop (generate → flash → observe → validate) beats Embedder's "95% compiles, hope it works" with "100% works after validation."
+
+#### Phase 5: Style Infrastructure
+
+**Goal**: BARR-C style checker + enforcement engine ensures generated code follows professional embedded coding standards
+
+**Depends on**: v1.0 complete (needs perception kernel for validation)
+
+**Research**: Likely (BARR-C standard specification, C AST parsing in Go, auto-fix strategies)
+
+**Research topics**: BARR-C Embedded C Coding Standard rules, Go C parser libraries (tree-sitter vs custom), style violation auto-fix patterns, integration with code generation workflow
+
+**Plans**: TBD
+
+Plans:
+- [ ] 05-01: TBD (run /gsd:plan-phase 5 to break down)
+
+#### Phase 6: Knowledge Graphs
+
+**Goal**: Behavioral and style knowledge graphs store validated patterns (what actually works on hardware) to guide future code generation
+
+**Depends on**: Phase 5 (style checker needed to validate patterns)
+
+**Research**: Likely (Graph database selection, vector search for semantic similarity, pattern extraction from validated code)
+
+**Research topics**: Neo4j vs alternatives for behavioral graph, Qdrant vs alternatives for vector search, embedding models for code similarity, knowledge graph schema design for hardware quirks
+
+**Plans**: TBD
+
+Plans:
+- [ ] 06-01: TBD (run /gsd:plan-phase 6 to break down)
+
+#### Phase 7: Code Generation Engine
+
+**Goal**: LLM-based firmware generator with automatic hardware validation loop (generate → flash → observe → validate → iterate)
+
+**Depends on**: Phase 6 (needs knowledge graphs to provide context to LLM)
+
+**Research**: Likely (LLM fine-tuning on embedded code, validation loop architecture, feedback engineering for failed validations)
+
+**Research topics**: Claude API fine-tuning vs LoRA adapters, prompt engineering for BARR-C compliance, validation feedback loop design (how to give LLM actionable error context), iteration limits and fallback strategies
+
+**Plans**: TBD
+
+Plans:
+- [ ] 07-01: TBD (run /gsd:plan-phase 7 to break down)
+
+#### Phase 8: Public Launch
+
+**Goal**: Polish UX, launch marketing campaign, ship to 200 paying users with "Better than Embedder" positioning
+
+**Depends on**: Phase 7 (needs end-to-end code generation working)
+
+**Research**: Unlikely (integration of existing components, marketing execution)
+
+**Plans**: TBD
+
+Plans:
+- [ ] 08-01: TBD (run /gsd:plan-phase 8 to break down)
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 2.5 → 3 → 4
+Phases execute in numeric order: 1 → 2 → 2.5 → 3 → 4 → 5 → 6 → 7 → 8
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Core + Vision | 3/3 | Complete | 2026-02-11 |
-| 2. Assertions | 2/2 | Complete | 2026-02-11 |
-| 2.5. Multi-LED Identity (INSERTED) | 1/1 | Complete | 2026-02-11 |
-| 3. Diff + Firmware Tracking | 2/2 | Complete | 2026-02-11 |
-| 4. Polish + Alpha | 2/2 | Complete | 2026-02-12 |
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 1. Core + Vision | v1.0 | 3/3 | Complete | 2026-02-11 |
+| 2. Assertions | v1.0 | 2/2 | Complete | 2026-02-11 |
+| 2.5. Multi-LED Identity (INSERTED) | v1.0 | 1/1 | Complete | 2026-02-11 |
+| 3. Diff + Firmware Tracking | v1.0 | 2/2 | Complete | 2026-02-11 |
+| 4. Polish + Alpha | v1.0 | 2/2 | Complete | 2026-02-12 |
+| 5. Style Infrastructure | v2.0 | 0/? | Not started | - |
+| 6. Knowledge Graphs | v2.0 | 0/? | Not started | - |
+| 7. Code Generation Engine | v2.0 | 0/? | Not started | - |
+| 8. Public Launch | v2.0 | 0/? | Not started | - |
