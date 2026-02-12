@@ -47,7 +47,8 @@ Optional:
 func init() {
 	generateCmd.Flags().StringVarP(&boardType, "board", "b", "", "Board type (required): esp32, stm32, arduino, etc.")
 	generateCmd.Flags().StringVarP(&outputFile, "output", "o", "", "Output file (optional, prints to stdout if not set)")
-	generateCmd.MarkFlagRequired("board")
+	//nolint:errcheck // Flag name is hardcoded, cannot fail
+	_ = generateCmd.MarkFlagRequired("board")
 }
 
 func runGenerate(cmd *cobra.Command, args []string) error {

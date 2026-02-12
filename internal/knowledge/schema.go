@@ -25,9 +25,9 @@ type ObservationNode struct {
 // StyleResultNode represents style checking results
 type StyleResultNode struct {
 	ID        string `json:"id"`
-	Compliant bool   `json:"compliant"`    // Overall compliance status
-	AutoFixed bool   `json:"auto_fixed"`   // Whether violations were auto-fixed
-	ViolCount int    `json:"viol_count"`   // Number of violations found
+	Compliant bool   `json:"compliant"`  // Overall compliance status
+	AutoFixed bool   `json:"auto_fixed"` // Whether violations were auto-fixed
+	ViolCount int    `json:"viol_count"` // Number of violations found
 }
 
 // Relationship types define how nodes connect
@@ -44,9 +44,9 @@ const (
 // Edge represents a relationship between two nodes
 type Edge struct {
 	ID       string       `json:"id"`
-	From     string       `json:"from"`      // Source node ID
-	To       string       `json:"to"`        // Target node ID
-	Type     Relationship `json:"type"`      // Relationship type
-	Created  time.Time    `json:"created"`   // When relationship was created
-	Metadata string       `json:"metadata"`  // JSON metadata for relationship
+	From     string       `json:"from"`     // Source node ID
+	To       string       `json:"to"`       // Target node ID
+	Type     Relationship `json:"type"`     // Relationship type
+	Created  time.Time    `json:"created"`  // When relationship was created
+	Metadata string       `json:"metadata"` // JSON metadata for relationship
 }

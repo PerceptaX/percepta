@@ -43,8 +43,10 @@ var (
 func init() {
 	diffCmd.Flags().StringVar(&diffFromFlag, "from", "", "Source firmware version tag (required)")
 	diffCmd.Flags().StringVar(&diffToFlag, "to", "", "Target firmware version tag (required)")
-	diffCmd.MarkFlagRequired("from")
-	diffCmd.MarkFlagRequired("to")
+	//nolint:errcheck // Flag name is hardcoded, cannot fail
+	_ = diffCmd.MarkFlagRequired("from")
+	//nolint:errcheck // Flag name is hardcoded, cannot fail
+	_ = diffCmd.MarkFlagRequired("to")
 }
 
 func runDiff(cmd *cobra.Command, args []string) error {

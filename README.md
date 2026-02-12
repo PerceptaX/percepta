@@ -1,5 +1,9 @@
 # Percepta
 
+[![CI](https://github.com/Perceptax/percepta/actions/workflows/ci.yml/badge.svg)](https://github.com/Perceptax/percepta/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/perceptax/percepta)](https://goreportcard.com/report/github.com/perceptax/percepta)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 **AI firmware development with hardware validation.** Generate code. Flash hardware. Validate behavior. All automated.
 
 Percepta uses Claude Vision to observe, validate, and compare physical hardware behavior (LEDs, displays, boot timing) without modifying firmware or hardware. Generate BARR-C compliant firmware with AI, automatically validated on real hardware. Close the feedback loop in embedded development — the only AI tool that knows if your code actually works.

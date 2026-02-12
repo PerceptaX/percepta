@@ -19,7 +19,7 @@ type MigrationFunc func(data map[string]interface{}) (map[string]interface{}, er
 func NewSchemaValidator() *SchemaValidator {
 	return &SchemaValidator{
 		currentVersion: CurrentSchemaVersion,
-		migrations: map[string]MigrationFunc{
+		migrations:     map[string]MigrationFunc{
 			// Future migrations go here
 			// "0.9.0->1.0.0": migrateV0ToV1,
 		},

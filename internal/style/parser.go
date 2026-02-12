@@ -1,6 +1,9 @@
+//go:build linux
+
 package style
 
 import (
+	"context"
 	"errors"
 
 	sitter "github.com/smacker/go-tree-sitter"
@@ -21,7 +24,10 @@ func NewParser() *Parser {
 
 // Parse parses C source code and returns the AST
 func (p *Parser) Parse(source []byte) (*sitter.Tree, error) {
-	tree := p.parser.Parse(nil, source)
+	tree, err := p.parser.ParseCtx(context.TODO(), nil, source)
+	if err != nil {
+		return nil, err
+	}
 	if tree == nil {
 		return nil, errors.New("failed to parse C code")
 	}
@@ -54,7 +60,7 @@ func (p *Parser) walkHelper(node *sitter.Node, visitor func(*sitter.Node)) {
 type NodeType string
 
 const (
-	NodeFunction   NodeType = "function_definition"
+	NodeFunction    NodeType = "function_definition"
 	NodeDeclaration NodeType = "declaration"
 	NodeIdentifier  NodeType = "identifier"
 	NodeNumber      NodeType = "number_literal"
@@ -145,8 +151,8 @@ func (p *Parser) GetTypeSpecifier(declNode *sitter.Node, source []byte) string {
 	for i := 0; i < int(declNode.ChildCount()); i++ {
 		child := declNode.Child(i)
 		if child.Type() == "primitive_type" ||
-		   child.Type() == "sized_type_specifier" ||
-		   child.Type() == "type_identifier" {
+			child.Type() == "sized_type_specifier" ||
+			child.Type() == "type_identifier" {
 			return child.Content(source)
 		}
 	}

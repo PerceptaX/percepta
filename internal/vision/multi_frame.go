@@ -133,7 +133,7 @@ func (a *ledAggregator) aggregate() core.LEDSignal {
 			}
 		}
 		led.BlinkHz = float64(transitionCount) / 2.0 // Each cycle has 2 transitions
-		led.On = true                                 // Blinking LED is "on" logically
+		led.On = true                                // Blinking LED is "on" logically
 	} else if onCount == len(a.observations) {
 		// Steady on
 		led.On = true

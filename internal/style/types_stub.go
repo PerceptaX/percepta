@@ -1,10 +1,6 @@
-//go:build linux
+//go:build !linux
 
 package style
-
-import (
-	sitter "github.com/smacker/go-tree-sitter"
-)
 
 // Rule represents a BARR-C coding standard rule
 type Rule struct {
@@ -22,9 +18,4 @@ type Violation struct {
 	Column     int
 	Message    string
 	Suggestion string // auto-fix suggestion if available
-}
-
-// Checker is the interface that all style checkers must implement
-type Checker interface {
-	Check(tree *sitter.Tree, source []byte) []Violation
 }

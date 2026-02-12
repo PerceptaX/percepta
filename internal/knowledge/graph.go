@@ -3,7 +3,6 @@ package knowledge
 import (
 	"crypto/sha256"
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -132,7 +131,9 @@ func (g *Graph) loadFromDB() error {
 		}
 
 		p.StyleCompliant = styleCompliantInt == 1
-		p.CreatedAt, _ = time.Parse(time.RFC3339, createdAt)
+		if parsedTime, err := time.Parse(time.RFC3339, createdAt); err == nil {
+			p.CreatedAt = parsedTime
+		}
 		g.patterns[p.ID] = &p
 	}
 
@@ -152,7 +153,9 @@ func (g *Graph) loadFromDB() error {
 			return fmt.Errorf("failed to scan observation: %w", err)
 		}
 
-		o.Timestamp, _ = time.Parse(time.RFC3339, timestamp)
+		if parsedTime, err := time.Parse(time.RFC3339, timestamp); err == nil {
+			o.Timestamp = parsedTime
+		}
 		g.observations[o.ID] = &o
 	}
 
@@ -194,7 +197,9 @@ func (g *Graph) loadFromDB() error {
 			return fmt.Errorf("failed to scan edge: %w", err)
 		}
 
-		e.Created, _ = time.Parse(time.RFC3339, created)
+		if parsedTime, err := time.Parse(time.RFC3339, created); err == nil {
+			e.Created = parsedTime
+		}
 		if metadata.Valid {
 			e.Metadata = metadata.String
 		}
@@ -418,10 +423,4 @@ func (g *Graph) Close() error {
 func generateID(content string) string {
 	hash := sha256.Sum256([]byte(content))
 	return fmt.Sprintf("%x", hash[:16]) // Use first 16 bytes (32 hex chars)
-}
-
-// ToJSON serializes a node to JSON for metadata storage
-func toJSON(v interface{}) string {
-	data, _ := json.Marshal(v)
-	return string(data)
 }
