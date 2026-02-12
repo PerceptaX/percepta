@@ -134,11 +134,39 @@ Plans:
 - [x] 06-01: Knowledge Graph Storage (graph DB setup, PatternStore API)
 - [x] 06-02: Semantic Search + CLI (vector store, semantic search, CLI commands)
 
+#### Phase 6.1: Perception Enhancements (INSERTED)
+
+**Goal**: Enhance vision system reliability for hardware validation loop (LCD OCR, multi-object tracking, temporal smoothing, schema stability)
+
+**Depends on**: Phase 6 (needs complete knowledge graph before improving perception)
+
+**Research**: Unlikely (internal improvements to existing vision system)
+
+**Plans**: 2 plans
+
+Plans:
+- [ ] 6.1-01: Vision System Enhancements (LCD OCR, multi-frame capture, confidence)
+- [ ] 6.1-02: Data Stability (temporal smoothing, schema lock)
+
+**Why this was inserted:**
+Phase 7's hardware validation loop requires robust perception. Current v1.0 perception has limitations:
+- ISS-001: Single-frame capture misses blinking LEDs
+- LCD OCR needs robustness improvements
+- No temporal smoothing for noisy observations
+- Observation schema not locked (breaking changes possible)
+
+**Required features:**
+- ✅ LCD OCR solid
+- ✅ Multi-object tracking (address ISS-001)
+- ✅ Confidence calibration
+- ✅ Temporal smoothing
+- ✅ JSON schema lock
+
 #### Phase 7: Code Generation Engine
 
 **Goal**: LLM-based firmware generator with automatic hardware validation loop (generate → flash → observe → validate → iterate)
 
-**Depends on**: Phase 6 (needs knowledge graphs to provide context to LLM)
+**Depends on**: Phase 6.1 (needs robust perception for hardware validation loop)
 
 **Research**: Likely (LLM fine-tuning on embedded code, validation loop architecture, feedback engineering for failed validations)
 
@@ -166,7 +194,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 2.5 → 3 → 4 → 5 → 6 → 7 → 8
+Phases execute in numeric order: 1 → 2 → 2.5 → 3 → 4 → 5 → 6 → 6.1 → 7 → 8
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -177,5 +205,6 @@ Phases execute in numeric order: 1 → 2 → 2.5 → 3 → 4 → 5 → 6 → 7 �
 | 4. Polish + Alpha | v1.0 | 2/2 | Complete | 2026-02-12 |
 | 5. Style Infrastructure | v2.0 | 2/2 | Complete | 2026-02-12 |
 | 6. Knowledge Graphs | v2.0 | 2/2 | Complete | 2026-02-12 |
-| 7. Code Generation Engine | v2.0 | 0/? | Not started | - |
+| 6.1. Perception Enhancements (INSERTED) | v2.0 | 0/2 | Planned | - |
+| 7. Code Generation Engine | v2.0 | 0/2 | Planned | - |
 | 8. Public Launch | v2.0 | 0/? | Not started | - |

@@ -6,16 +6,16 @@ See: .planning/PROJECT.md (updated 2026-02-11)
 
 **Core value:** observe() must work reliably. If Percepta can accurately tell you "the LED is blinking at 1.98 Hz" with 95%+ confidence, everything else follows.
 
-**Current focus:** Phase 7 — Code Generation Engine (v2.0 Code Generation milestone)
+**Current focus:** Phase 6.1 — Perception Enhancements (v2.0 Code Generation milestone)
 
 ## Current Position
 
-Phase: 6 of 8 (Knowledge Graphs)
-Plan: 06-02 complete (Semantic Search + CLI)
-Status: Complete - 2/2 plans complete
-Last activity: 2026-02-12 — Phase 6 completed (Knowledge Graphs)
+Phase: 6.1 of 8 (Perception Enhancements - INSERTED)
+Plan: 6.1-01 of 2
+Status: Ready to execute
+Last activity: 2026-02-12 — Phase 6.1 planned (2 plans created)
 
-Progress: ███████░░░ 75% (6/8 phases complete)
+Progress: ███████░░░ 67% (6/9 phases complete, 1 inserted)
 
 ## Performance Metrics
 
@@ -37,7 +37,7 @@ Progress: ███████░░░ 75% (6/8 phases complete)
 
 **v2.0 Code Generation (IN PROGRESS):**
 - Total plans completed: 5
-- Status: Phase 5 complete, Phase 6 complete
+- Status: Phase 5 complete, Phase 6 complete, Phase 6.1 planned
 
 **By Phase (v2.0):**
 
@@ -107,11 +107,12 @@ None - starting fresh with v2.0 milestone.
 
 - Phase 2.5 inserted after Phase 2: Fix multi-LED signal identity extraction (BLOCKING - required before Phase 3)
 - Milestone v2.0 Code Generation created: AI firmware generation with hardware validation, 4 phases (Phase 5-8)
+- Phase 6.1 inserted after Phase 6: Perception Enhancements (URGENT - required before Phase 7 validation loop). Addresses ISS-001, adds LCD OCR robustness, temporal smoothing, and schema stability.
 
 ## Session Continuity
 
 Last session: 2026-02-12T23:30:00Z
-Stopped at: Phase 6 complete (Knowledge Graphs)
+Stopped at: Phase 6.1 planned (Perception Enhancements)
 Resume file: None
 
-**Next:** Phase 7 planning (Code Generation Engine) - break down into plans
+**Next:** Execute Plan 6.1-01 (Vision System Enhancements) - LCD OCR with structured output, multi-frame capture, confidence calibration
