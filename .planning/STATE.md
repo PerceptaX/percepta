@@ -6,16 +6,16 @@ See: .planning/PROJECT.md (updated 2026-02-11)
 
 **Core value:** observe() must work reliably. If Percepta can accurately tell you "the LED is blinking at 1.98 Hz" with 95%+ confidence, everything else follows.
 
-**Current focus:** Phase 7 — Code Generation Engine (v2.0 Code Generation milestone)
+**Current focus:** Phase 8 — Public Launch (v2.0 Code Generation milestone COMPLETE)
 
 ## Current Position
 
-Phase: 7 of 8 (Code Generation Engine)
-Plan: 07-01 complete (1/2)
-Status: Phase 07-01 complete
-Last activity: 2026-02-13 — Phase 07-01 completed (Code Generator + Pattern Retrieval)
+Phase: 8 of 8 (Public Launch)
+Plan: Ready to plan
+Status: Phase 7 complete (v2.0 Code Generation milestone ACHIEVED)
+Last activity: 2026-02-13 — Phase 07-02 completed (Validation Pipeline)
 
-Progress: ████████░░ 82% (7/9 phases complete, Phase 7 in progress: 1/2 plans)
+Progress: █████████░ 88% (8/9 phases complete)
 
 ## Performance Metrics
 
@@ -35,9 +35,10 @@ Progress: ████████░░ 82% (7/9 phases complete, Phase 7 in pr
 | 3     | 2     | 75 min | 37.5 min |
 | 4     | 2     | 7 min | 3.5 min  |
 
-**v2.0 Code Generation (IN PROGRESS):**
-- Total plans completed: 9
-- Status: Phase 5 complete, Phase 6 complete, Phase 6.1 complete, Phase 7 in progress (1/2)
+**v2.0 Code Generation (COMPLETE):**
+- Total plans completed: 11
+- Status: Phase 5 complete, Phase 6 complete, Phase 6.1 complete, Phase 7 complete
+- Milestone achieved: 2026-02-13
 
 **By Phase (v2.0):**
 
@@ -46,7 +47,7 @@ Progress: ████████░░ 82% (7/9 phases complete, Phase 7 in pr
 | 5     | 2     | 90 min | 45 min   |
 | 6     | 2     | 150 min | 75 min   |
 | 6.1   | 2/2   | 90 min | 45 min   |
-| 7     | 1/2   | 45 min | 45 min   |
+| 7     | 2/2   | 80 min | 40 min   |
 
 ## Accumulated Context
 
@@ -112,6 +113,14 @@ Historical decisions from v1.0:
 | 7     | Code truncation at 50 lines per example | Prevents over-long prompts while providing useful context |
 | 7     | Graceful degradation without semantic search | Generate code with BARR-C requirements only if OPENAI_API_KEY not set |
 | 7     | Board-specific API guidance hardcoded | Common boards (ESP32, STM32, Arduino) to prevent API mistakes |
+| 7     | Style validation only for MVP | Hardware validation deferred to Phase 8 - faster shipping while maintaining BARR-C compliance |
+| 7     | Auto-fix violations automatically | Deterministic fixes (naming, types) applied without user confirmation - speeds up workflow |
+| 7     | Store only compliant patterns | Patterns must pass style check to be stored - ensures knowledge graph quality |
+| 7     | Graceful degradation on storage failure | Generation succeeds even if pattern storage fails - user gets code regardless |
+| 7     | Device ID from config first device | Simple MVP approach - load first device from config.Devices or fallback to 'unknown-device' |
+| 7     | Detailed validation reporting | Transparent reporting of validation steps - shows style status, auto-fix, pattern storage |
+| 7     | Iterate count = 1 for MVP | Future enhancement: multi-iteration refinement with feedback loop |
+| 7     | Re-check style after auto-fix | Shows remaining violations after fixes - user knows what needs manual attention |
 
 ### Deferred Issues
 
@@ -129,8 +138,8 @@ None - starting fresh with v2.0 milestone.
 
 ## Session Continuity
 
-Last session: 2026-02-13T02:15:00Z
-Stopped at: Phase 07-01 complete (Code Generator + Pattern Retrieval)
+Last session: 2026-02-13T03:05:00Z
+Stopped at: Phase 7 complete (v2.0 Code Generation milestone ACHIEVED)
 Resume file: None
 
-**Next:** Phase 07-02 (Validation Pipeline) - Style validation, hardware validation loop, and pattern storage integration
+**Next:** Phase 8 (Public Launch) - Polish UX, documentation, marketing campaign, ship to 200 paying users
