@@ -1,4 +1,4 @@
-//go:build !windows
+//go:build linux || darwin
 
 package percepta
 
@@ -20,8 +20,8 @@ type Core struct {
 }
 
 func NewCore(cameraPath string, storage core.StorageDriver) (*Core, error) {
-	// Initialize camera driver (Linux V4L2 for now)
-	cameraDriver := camera.NewV4L2Camera(cameraPath)
+	// Initialize camera driver (platform-specific)
+	cameraDriver := camera.NewCamera(cameraPath)
 
 	// Initialize vision driver
 	visionDriver, err := vision.NewClaudeVision()
