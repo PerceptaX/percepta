@@ -56,8 +56,23 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     needs: test
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            goos: linux
+            goarch: amd64
+            output: percepta-linux-amd64
+          - os: macos-latest
+            goos: darwin
+            goarch: amd64
+            output: percepta-darwin-amd64
+          - os: ubuntu-latest
+            goos: windows
+            goarch: amd64
+            output: percepta-windows-amd64.exe
 
     steps:
     - name: Checkout code
@@ -68,29 +83,19 @@ jobs:
       with:
         go-version: '1.24'
 
-    - name: Build Linux binary
+    - name: Build binary
+      env:
+        GOOS: ${{ matrix.goos }}
+        GOARCH: ${{ matrix.goarch }}
       run: |
-        go build -v -o percepta-linux-amd64 ./cmd/percepta
-        ls -lh percepta-linux-amd64
+        go build -v -o ${{ matrix.output }} ./cmd/percepta
+        ls -lh ${{ matrix.output }}
 
-    - name: Build macOS binary
-      run: |
-        GOOS=darwin GOARCH=amd64 go build -v -o percepta-darwin-amd64 ./cmd/percepta
-        ls -lh percepta-darwin-amd64
-
-    - name: Build Windows binary
-      run: |
-        GOOS=windows GOARCH=amd64 go build -v -o percepta-windows-amd64.exe ./cmd/percepta
-        ls -lh percepta-windows-amd64.exe
-
-    - name: Upload artifacts
+    - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: binaries
-        path: |
-          percepta-linux-amd64
-          percepta-darwin-amd64
-          percepta-windows-amd64.exe
+        name: ${{ matrix.output }}
+        path: ${{ matrix.output }}
 
   lint:
     name: Lint
