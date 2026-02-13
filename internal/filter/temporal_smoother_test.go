@@ -288,6 +288,66 @@ func TestTemporalSmoother_TimeWindow(t *testing.T) {
 	}
 }
 
+func TestTemporalSmoother_ChangingDisplayBypassesSmoothing(t *testing.T) {
+	// Setup: storage with stable display history
+	store := storage.NewMemoryStorage()
+	smoother := NewTemporalSmoother(store)
+
+	// Add historical observations with stable "READY" text
+	baseTime := time.Now().Add(-3 * time.Second)
+	for i := 0; i < 3; i++ {
+		obs := core.Observation{
+			ID:        core.GenerateID(),
+			DeviceID:  "test-device",
+			Timestamp: baseTime.Add(time.Duration(i) * time.Second),
+			Signals: []core.Signal{
+				core.DisplaySignal{Name: "LCD", Text: "READY", Confidence: 0.95},
+			},
+		}
+		store.Save(obs)
+	}
+
+	// New observation with Changed=true (display is transitioning)
+	newObs := &core.Observation{
+		ID:        "changing-obs",
+		DeviceID:  "test-device",
+		Timestamp: time.Now(),
+		Signals: []core.Signal{
+			core.DisplaySignal{
+				Name:       "LCD",
+				Text:       "Rebooting",
+				Confidence: 0.85,
+				Changed:    true,
+				History: []core.DisplayTextEntry{
+					{OffsetMs: 0, Text: "READY", Confidence: 0.90},
+					{OffsetMs: 400, Text: "Rebooting", Confidence: 0.85},
+				},
+			},
+		},
+	}
+
+	// Smooth should NOT override changing display with historical "READY"
+	smoothed, err := smoother.Smooth(newObs)
+	if err != nil {
+		t.Fatalf("Smooth failed: %v", err)
+	}
+
+	if len(smoothed.Signals) != 1 {
+		t.Fatalf("Expected 1 signal, got %d", len(smoothed.Signals))
+	}
+
+	display := smoothed.Signals[0].(core.DisplaySignal)
+	if !display.Changed {
+		t.Errorf("Expected Changed=true to be preserved")
+	}
+	if display.Text != "Rebooting" {
+		t.Errorf("Expected text 'Rebooting' (not smoothed away), got '%s'", display.Text)
+	}
+	if len(display.History) != 2 {
+		t.Errorf("Expected history preserved, got %d entries", len(display.History))
+	}
+}
+
 // failingStorage is a mock storage that fails Query
 type failingStorage struct{}
 

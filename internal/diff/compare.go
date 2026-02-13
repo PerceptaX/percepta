@@ -95,10 +95,12 @@ func normalizeSignals(signals []core.Signal) []NormalizedSignal {
 			})
 		case core.DisplaySignal:
 			normalized = append(normalized, NormalizedSignal{
-				Name:   s.Name,
-				Type:   "display",
-				Signal: s,
-				Text:   s.Text,
+				Name:    s.Name,
+				Type:    "display",
+				Signal:  s,
+				Text:    s.Text,
+				History: s.History,
+				Changed: s.Changed,
 			})
 		case core.BootTimingSignal:
 			normalized = append(normalized, NormalizedSignal{
@@ -152,7 +154,24 @@ func signalsEqual(a, b NormalizedSignal) bool {
 		aDisplay := a.Signal.(core.DisplaySignal)
 		bDisplay := b.Signal.(core.DisplaySignal)
 
-		// Compare text exactly
+		if aDisplay.Changed != bDisplay.Changed {
+			return false
+		}
+
+		if aDisplay.Changed && bDisplay.Changed {
+			// Compare history sequences (text at each transition, ignoring timing)
+			if len(aDisplay.History) != len(bDisplay.History) {
+				return false
+			}
+			for i := range aDisplay.History {
+				if aDisplay.History[i].Text != bDisplay.History[i].Text {
+					return false
+				}
+			}
+			return true
+		}
+
+		// Compare text exactly for static displays
 		return aDisplay.Text == bDisplay.Text
 
 	case "boot_timing":
@@ -202,6 +221,9 @@ func formatSignalState(sig NormalizedSignal) string {
 
 	case "display":
 		display := sig.Signal.(core.DisplaySignal)
+		if display.Changed && len(display.History) > 0 {
+			return formatDisplayHistory(display.History)
+		}
 		return fmt.Sprintf("\"%s\"", display.Text)
 
 	case "boot_timing":
@@ -307,6 +329,18 @@ func describeChange(from, to NormalizedSignal) string {
 	case "display":
 		fromDisplay := from.Signal.(core.DisplaySignal)
 		toDisplay := to.Signal.(core.DisplaySignal)
+
+		if fromDisplay.Changed != toDisplay.Changed {
+			if toDisplay.Changed {
+				return fmt.Sprintf("static→changing: %s", formatDisplayHistory(toDisplay.History))
+			}
+			return fmt.Sprintf("changing→static: \"%s\"", toDisplay.Text)
+		}
+
+		if toDisplay.Changed && fromDisplay.Changed {
+			return fmt.Sprintf("sequence: %s → %s", formatDisplayHistory(fromDisplay.History), formatDisplayHistory(toDisplay.History))
+		}
+
 		return fmt.Sprintf("text: \"%s\"→\"%s\"", fromDisplay.Text, toDisplay.Text)
 
 	case "boot_timing":
@@ -316,6 +350,21 @@ func describeChange(from, to NormalizedSignal) string {
 	}
 
 	return ""
+}
+
+func formatDisplayHistory(history []core.DisplayTextEntry) string {
+	if len(history) == 0 {
+		return ""
+	}
+	result := "["
+	for i, entry := range history {
+		if i > 0 {
+			result += " -> "
+		}
+		result += fmt.Sprintf("\"%s\"@%dms", entry.Text, entry.OffsetMs)
+	}
+	result += "]"
+	return result
 }
 
 func abs(x int) int {

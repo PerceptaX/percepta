@@ -234,6 +234,101 @@ func (a *DisplayAssertion) String() string {
 	return fmt.Sprintf("Display.%s \"%s\"", a.Name, a.Expected)
 }
 
+// DisplayChangedAssertion validates display state transitions
+type DisplayChangedAssertion struct {
+	Name     string
+	FromText string
+	ToText   string
+}
+
+func (a *DisplayChangedAssertion) Evaluate(obs *core.Observation) AssertionResult {
+	// Find matching display signal by name (case-insensitive)
+	var matchedSignal *core.DisplaySignal
+	lowerName := strings.ToLower(a.Name)
+	for _, sig := range obs.Signals {
+		if dispSig, ok := sig.(core.DisplaySignal); ok {
+			if strings.ToLower(dispSig.Name) == lowerName {
+				matchedSignal = &dispSig
+				break
+			}
+		}
+	}
+
+	if matchedSignal == nil {
+		return AssertionResult{
+			Passed:     false,
+			Expected:   a.String(),
+			Actual:     "Display not found in observation",
+			Confidence: 0.0,
+			Message:    fmt.Sprintf("Display '%s' not found in observation", a.Name),
+		}
+	}
+
+	if !matchedSignal.Changed || len(matchedSignal.History) == 0 {
+		return AssertionResult{
+			Passed:     false,
+			Expected:   a.String(),
+			Actual:     fmt.Sprintf("Display '%s' is static: \"%s\"", matchedSignal.Name, matchedSignal.Text),
+			Confidence: matchedSignal.Confidence,
+			Message:    fmt.Sprintf("Expected display to change from \"%s\" to \"%s\", but display is static", a.FromText, a.ToText),
+		}
+	}
+
+	// Check that FromText appears before ToText in history (substring matching)
+	fromIdx := -1
+	toIdx := -1
+	for i, entry := range matchedSignal.History {
+		if fromIdx == -1 && strings.Contains(entry.Text, a.FromText) {
+			fromIdx = i
+		}
+		if strings.Contains(entry.Text, a.ToText) {
+			toIdx = i
+		}
+	}
+
+	if fromIdx == -1 {
+		return AssertionResult{
+			Passed:     false,
+			Expected:   a.String(),
+			Actual:     fmt.Sprintf("Display '%s' history does not contain \"%s\"", matchedSignal.Name, a.FromText),
+			Confidence: matchedSignal.Confidence,
+			Message:    fmt.Sprintf("Text \"%s\" not found in display history", a.FromText),
+		}
+	}
+
+	if toIdx == -1 {
+		return AssertionResult{
+			Passed:     false,
+			Expected:   a.String(),
+			Actual:     fmt.Sprintf("Display '%s' history does not contain \"%s\"", matchedSignal.Name, a.ToText),
+			Confidence: matchedSignal.Confidence,
+			Message:    fmt.Sprintf("Text \"%s\" not found in display history", a.ToText),
+		}
+	}
+
+	if fromIdx >= toIdx {
+		return AssertionResult{
+			Passed:     false,
+			Expected:   a.String(),
+			Actual:     fmt.Sprintf("Display '%s': \"%s\" does not appear before \"%s\"", matchedSignal.Name, a.FromText, a.ToText),
+			Confidence: matchedSignal.Confidence,
+			Message:    fmt.Sprintf("\"%s\" (index %d) does not appear before \"%s\" (index %d)", a.FromText, fromIdx, a.ToText, toIdx),
+		}
+	}
+
+	return AssertionResult{
+		Passed:     true,
+		Expected:   a.String(),
+		Actual:     fmt.Sprintf("Display '%s' changed from \"%s\" to \"%s\"", matchedSignal.Name, a.FromText, a.ToText),
+		Confidence: matchedSignal.Confidence,
+		Message:    fmt.Sprintf("Display '%s' transitioned from \"%s\" to \"%s\"", matchedSignal.Name, a.FromText, a.ToText),
+	}
+}
+
+func (a *DisplayChangedAssertion) String() string {
+	return fmt.Sprintf("Display.%s CHANGED \"%s\" -> \"%s\"", a.Name, a.FromText, a.ToText)
+}
+
 // TimingAssertion validates boot timing
 type TimingAssertion struct {
 	MaxDurationMs int64

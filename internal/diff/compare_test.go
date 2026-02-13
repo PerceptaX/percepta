@@ -381,6 +381,141 @@ func TestCompare_CountByType(t *testing.T) {
 	}
 }
 
+func TestCompare_DisplayHistoryChange(t *testing.T) {
+	from := &core.Observation{
+		ID:           "obs1",
+		DeviceID:     "fpga",
+		FirmwareHash: "v1",
+		Timestamp:    time.Now(),
+		Signals: []core.Signal{
+			core.DisplaySignal{
+				Name:    "LCD",
+				Text:    "Ready",
+				Changed: true,
+				History: []core.DisplayTextEntry{
+					{OffsetMs: 0, Text: "Boot"},
+					{OffsetMs: 400, Text: "Ready"},
+				},
+			},
+		},
+	}
+
+	to := &core.Observation{
+		ID:           "obs2",
+		DeviceID:     "fpga",
+		FirmwareHash: "v2",
+		Timestamp:    time.Now(),
+		Signals: []core.Signal{
+			core.DisplaySignal{
+				Name:    "LCD",
+				Text:    "Done",
+				Changed: true,
+				History: []core.DisplayTextEntry{
+					{OffsetMs: 0, Text: "Boot"},
+					{OffsetMs: 400, Text: "Init"},
+					{OffsetMs: 800, Text: "Done"},
+				},
+			},
+		},
+	}
+
+	result := Compare(from, to)
+
+	if !result.HasChanges() {
+		t.Fatal("Expected changes for different display histories")
+	}
+
+	change := result.Changes[0]
+	if change.Type != ChangeModified {
+		t.Errorf("Expected ChangeModified, got %v", change.Type)
+	}
+}
+
+func TestCompare_DisplayHistoryNoChange(t *testing.T) {
+	from := &core.Observation{
+		ID:           "obs1",
+		DeviceID:     "fpga",
+		FirmwareHash: "v1",
+		Timestamp:    time.Now(),
+		Signals: []core.Signal{
+			core.DisplaySignal{
+				Name:    "LCD",
+				Text:    "Ready",
+				Changed: true,
+				History: []core.DisplayTextEntry{
+					{OffsetMs: 0, Text: "Boot"},
+					{OffsetMs: 400, Text: "Ready"},
+				},
+			},
+		},
+	}
+
+	to := &core.Observation{
+		ID:           "obs2",
+		DeviceID:     "fpga",
+		FirmwareHash: "v2",
+		Timestamp:    time.Now(),
+		Signals: []core.Signal{
+			core.DisplaySignal{
+				Name:    "LCD",
+				Text:    "Ready",
+				Changed: true,
+				History: []core.DisplayTextEntry{
+					{OffsetMs: 0, Text: "Boot"},
+					{OffsetMs: 500, Text: "Ready"}, // Different timing, same text sequence
+				},
+			},
+		},
+	}
+
+	result := Compare(from, to)
+
+	if result.HasChanges() {
+		t.Errorf("Expected no changes for same text sequence with different timing, got %d", len(result.Changes))
+	}
+}
+
+func TestCompare_StaticToChangingDisplay(t *testing.T) {
+	from := &core.Observation{
+		ID:           "obs1",
+		DeviceID:     "fpga",
+		FirmwareHash: "v1",
+		Timestamp:    time.Now(),
+		Signals: []core.Signal{
+			core.DisplaySignal{Name: "LCD", Text: "Ready"},
+		},
+	}
+
+	to := &core.Observation{
+		ID:           "obs2",
+		DeviceID:     "fpga",
+		FirmwareHash: "v2",
+		Timestamp:    time.Now(),
+		Signals: []core.Signal{
+			core.DisplaySignal{
+				Name:    "LCD",
+				Text:    "Done",
+				Changed: true,
+				History: []core.DisplayTextEntry{
+					{OffsetMs: 0, Text: "Boot"},
+					{OffsetMs: 400, Text: "Done"},
+				},
+			},
+		},
+	}
+
+	result := Compare(from, to)
+
+	if !result.HasChanges() {
+		t.Fatal("Expected changes for static→changing transition")
+	}
+
+	change := result.Changes[0]
+	if change.Type != ChangeModified {
+		t.Errorf("Expected ChangeModified, got %v", change.Type)
+	}
+}
+
 func TestNormalizeBlinkHz(t *testing.T) {
 	tests := []struct {
 		input    float64

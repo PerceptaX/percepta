@@ -60,4 +60,6 @@ type NormalizedSignal struct {
 	BlinkHz float64
 	Color   core.RGB
 	Text    string
+	History []core.DisplayTextEntry
+	Changed bool
 }
