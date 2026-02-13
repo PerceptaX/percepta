@@ -15,6 +15,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	observeFrames   int
+	observeInterval int
+)
+
 var observeCmd = &cobra.Command{
 	Use:   "observe <device>",
 	Short: "Observe hardware state via computer vision",
@@ -30,13 +35,18 @@ Examples:
   # Observe with specific camera
   percepta observe my-esp32 --camera /dev/video0
 
-  # Observe for 10 seconds
-  percepta observe my-esp32 --duration 10s
+  # Observe with more frames for dynamic displays
+  percepta observe my-esp32 --frames 10 --interval 500
 
   # Save observation to file
   percepta observe my-esp32 --output observation.json`,
 	Args: cobra.ExactArgs(1),
 	RunE: runObserve,
+}
+
+func init() {
+	observeCmd.Flags().IntVar(&observeFrames, "frames", 0, "number of frames to capture (default: 5)")
+	observeCmd.Flags().IntVar(&observeInterval, "interval", 0, "milliseconds between frames (default: 200)")
 }
 
 func runObserve(cmd *cobra.Command, args []string) error {
@@ -81,7 +91,20 @@ func runObserve(cmd *cobra.Command, args []string) error {
 
 	// Capture observation with spinner
 	spinner := ui.NewSpinner(fmt.Sprintf("Capturing frames from %s...", deviceID))
-	obs, err := perceptaCore.Observe(deviceID)
+	var obs *core.Observation
+	if observeFrames > 0 || observeInterval > 0 {
+		frameCount := observeFrames
+		if frameCount <= 0 {
+			frameCount = 5
+		}
+		interval := time.Duration(observeInterval) * time.Millisecond
+		if interval <= 0 {
+			interval = 200 * time.Millisecond
+		}
+		obs, err = perceptaCore.ObserveWithOptions(deviceID, frameCount, interval)
+	} else {
+		obs, err = perceptaCore.Observe(deviceID)
+	}
 	if err != nil {
 		spinner.Stop(false)
 		return perceptaErrors.ObservationFailed(err)
@@ -131,8 +154,17 @@ func printObservation(obs *core.Observation, count int) {
 			fmt.Printf(" [confidence: %.2f]\n", s.Confidence)
 
 		case core.DisplaySignal:
-			fmt.Printf("  %d. Display '%s': \"%s\" [confidence: %.2f]\n",
-				i+1, s.Name, s.Text, s.Confidence)
+			if s.Changed && len(s.History) > 0 {
+				fmt.Printf("  %d. Display '%s': (changing) [confidence: %.2f]\n",
+					i+1, s.Name, s.Confidence)
+				for _, entry := range s.History {
+					fmt.Printf("      @%dms: \"%s\" [%.2f]\n",
+						entry.OffsetMs, entry.Text, entry.Confidence)
+				}
+			} else {
+				fmt.Printf("  %d. Display '%s': \"%s\" [confidence: %.2f]\n",
+					i+1, s.Name, s.Text, s.Confidence)
+			}
 
 		case core.BootTimingSignal:
 			fmt.Printf("  %d. Boot timing: %dms [confidence: %.2f]\n",

@@ -109,12 +109,22 @@ func parseLED(dsl string) (*LEDAssertion, error) {
 	return nil, fmt.Errorf("unknown LED state format: %s", state)
 }
 
-func parseDisplay(dsl string) (*DisplayAssertion, error) {
+func parseDisplay(dsl string) (Assertion, error) {
+	// Display.name CHANGED "from" -> "to"
+	changedPattern := regexp.MustCompile(`^Display\.([a-zA-Z0-9_-]+)\s+CHANGED\s+"([^"]+)"\s*->\s*"([^"]+)"$`)
+	if matches := changedPattern.FindStringSubmatch(dsl); matches != nil {
+		return &DisplayChangedAssertion{
+			Name:     matches[1],
+			FromText: matches[2],
+			ToText:   matches[3],
+		}, nil
+	}
+
 	// Display.name "text"
 	pattern := regexp.MustCompile(`^Display\.([a-zA-Z0-9_-]+)\s+"([^"]+)"$`)
 	matches := pattern.FindStringSubmatch(dsl)
 	if matches == nil {
-		return nil, fmt.Errorf("invalid Display assertion syntax: %s (expected: Display.name \"text\")", dsl)
+		return nil, fmt.Errorf("invalid Display assertion syntax: %s (expected: Display.name \"text\" or Display.name CHANGED \"from\" -> \"to\")", dsl)
 	}
 
 	return &DisplayAssertion{

@@ -28,11 +28,20 @@ type RGB struct {
 	B uint8 `json:"b"`
 }
 
-// DisplaySignal represents display content observation
-type DisplaySignal struct {
-	Name       string  `json:"name"`
+// DisplayTextEntry represents a single text observation at a point in time
+type DisplayTextEntry struct {
+	OffsetMs   int64   `json:"offset_ms"`
 	Text       string  `json:"text"`
 	Confidence float64 `json:"confidence"`
+}
+
+// DisplaySignal represents display content observation
+type DisplaySignal struct {
+	Name       string             `json:"name"`
+	Text       string             `json:"text"`
+	Confidence float64            `json:"confidence"`
+	History    []DisplayTextEntry `json:"history,omitempty"`
+	Changed    bool               `json:"changed,omitempty"`
 }
 
 func (d DisplaySignal) Type() string       { return "display" }

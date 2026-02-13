@@ -82,6 +82,217 @@ func TestLEDAggregator_Blinking(t *testing.T) {
 	}
 }
 
+func TestAggregateDisplays_StaticText(t *testing.T) {
+	base := time.Now()
+	frames := []FrameResult{
+		{
+			Signals:    []core.Signal{core.DisplaySignal{Name: "LCD", Text: "Ready", Confidence: 0.90}},
+			CapturedAt: base,
+		},
+		{
+			Signals:    []core.Signal{core.DisplaySignal{Name: "LCD", Text: "Ready", Confidence: 0.92}},
+			CapturedAt: base.Add(200 * time.Millisecond),
+		},
+		{
+			Signals:    []core.Signal{core.DisplaySignal{Name: "LCD", Text: "Ready", Confidence: 0.88}},
+			CapturedAt: base.Add(400 * time.Millisecond),
+		},
+	}
+
+	displays := AggregateDisplays(frames)
+
+	if len(displays) != 1 {
+		t.Fatalf("expected 1 display, got %d", len(displays))
+	}
+
+	d := displays[0]
+	if d.Name != "LCD" {
+		t.Errorf("expected name LCD, got %s", d.Name)
+	}
+	if d.Text != "Ready" {
+		t.Errorf("expected text 'Ready', got '%s'", d.Text)
+	}
+	if d.Changed {
+		t.Errorf("expected Changed=false for static text")
+	}
+	if len(d.History) != 0 {
+		t.Errorf("expected nil History for static text, got %d entries", len(d.History))
+	}
+}
+
+func TestAggregateDisplays_ChangingText(t *testing.T) {
+	base := time.Now()
+	frames := []FrameResult{
+		{
+			Signals:    []core.Signal{core.DisplaySignal{Name: "LCD", Text: "Boot", Confidence: 0.90}},
+			CapturedAt: base,
+		},
+		{
+			Signals:    []core.Signal{core.DisplaySignal{Name: "LCD", Text: "Init...", Confidence: 0.88}},
+			CapturedAt: base.Add(400 * time.Millisecond),
+		},
+		{
+			Signals:    []core.Signal{core.DisplaySignal{Name: "LCD", Text: "Ready", Confidence: 0.90}},
+			CapturedAt: base.Add(800 * time.Millisecond),
+		},
+	}
+
+	displays := AggregateDisplays(frames)
+
+	if len(displays) != 1 {
+		t.Fatalf("expected 1 display, got %d", len(displays))
+	}
+
+	d := displays[0]
+	if !d.Changed {
+		t.Errorf("expected Changed=true for changing text")
+	}
+	if d.Text != "Ready" {
+		t.Errorf("expected latest text 'Ready', got '%s'", d.Text)
+	}
+	if len(d.History) != 3 {
+		t.Fatalf("expected 3 history entries, got %d", len(d.History))
+	}
+	if d.History[0].Text != "Boot" {
+		t.Errorf("expected history[0] text 'Boot', got '%s'", d.History[0].Text)
+	}
+	if d.History[1].Text != "Init..." {
+		t.Errorf("expected history[1] text 'Init...', got '%s'", d.History[1].Text)
+	}
+	if d.History[2].Text != "Ready" {
+		t.Errorf("expected history[2] text 'Ready', got '%s'", d.History[2].Text)
+	}
+}
+
+func TestAggregateDisplays_Deduplication(t *testing.T) {
+	base := time.Now()
+	frames := []FrameResult{
+		{
+			Signals:    []core.Signal{core.DisplaySignal{Name: "LCD", Text: "Boot", Confidence: 0.90}},
+			CapturedAt: base,
+		},
+		{
+			Signals:    []core.Signal{core.DisplaySignal{Name: "LCD", Text: "Boot", Confidence: 0.88}},
+			CapturedAt: base.Add(200 * time.Millisecond),
+		},
+		{
+			Signals:    []core.Signal{core.DisplaySignal{Name: "LCD", Text: "Ready", Confidence: 0.90}},
+			CapturedAt: base.Add(400 * time.Millisecond),
+		},
+		{
+			Signals:    []core.Signal{core.DisplaySignal{Name: "LCD", Text: "Ready", Confidence: 0.91}},
+			CapturedAt: base.Add(600 * time.Millisecond),
+		},
+	}
+
+	displays := AggregateDisplays(frames)
+
+	if len(displays) != 1 {
+		t.Fatalf("expected 1 display, got %d", len(displays))
+	}
+
+	d := displays[0]
+	if !d.Changed {
+		t.Errorf("expected Changed=true")
+	}
+	// Should deduplicate consecutive identical text: Boot, Ready (not Boot, Boot, Ready, Ready)
+	if len(d.History) != 2 {
+		t.Fatalf("expected 2 history entries (deduplicated), got %d", len(d.History))
+	}
+	if d.History[0].Text != "Boot" {
+		t.Errorf("expected history[0] 'Boot', got '%s'", d.History[0].Text)
+	}
+	if d.History[1].Text != "Ready" {
+		t.Errorf("expected history[1] 'Ready', got '%s'", d.History[1].Text)
+	}
+}
+
+func TestAggregateDisplays_MultipleDisplays(t *testing.T) {
+	base := time.Now()
+	frames := []FrameResult{
+		{
+			Signals: []core.Signal{
+				core.DisplaySignal{Name: "LCD", Text: "Boot", Confidence: 0.90},
+				core.DisplaySignal{Name: "OLED", Text: "Status: OK", Confidence: 0.85},
+			},
+			CapturedAt: base,
+		},
+		{
+			Signals: []core.Signal{
+				core.DisplaySignal{Name: "LCD", Text: "Ready", Confidence: 0.88},
+				core.DisplaySignal{Name: "OLED", Text: "Status: OK", Confidence: 0.87},
+			},
+			CapturedAt: base.Add(200 * time.Millisecond),
+		},
+	}
+
+	displays := AggregateDisplays(frames)
+
+	if len(displays) != 2 {
+		t.Fatalf("expected 2 displays, got %d", len(displays))
+	}
+
+	var lcd, oled *core.DisplaySignal
+	for i := range displays {
+		if displays[i].Name == "LCD" {
+			lcd = &displays[i]
+		} else if displays[i].Name == "OLED" {
+			oled = &displays[i]
+		}
+	}
+
+	if lcd == nil || oled == nil {
+		t.Fatal("expected both LCD and OLED displays")
+	}
+
+	if !lcd.Changed {
+		t.Errorf("LCD should have Changed=true")
+	}
+	if oled.Changed {
+		t.Errorf("OLED should have Changed=false (static)")
+	}
+}
+
+func TestAggregateDisplays_EmptyFrames(t *testing.T) {
+	displays := AggregateDisplays(nil)
+	if displays != nil {
+		t.Errorf("expected nil for empty frames, got %d", len(displays))
+	}
+
+	displays = AggregateDisplays([]FrameResult{})
+	if displays != nil {
+		t.Errorf("expected nil for empty frames, got %d", len(displays))
+	}
+}
+
+func TestAggregateDisplays_AverageConfidence(t *testing.T) {
+	base := time.Now()
+	frames := []FrameResult{
+		{
+			Signals:    []core.Signal{core.DisplaySignal{Name: "LCD", Text: "Hello", Confidence: 0.80}},
+			CapturedAt: base,
+		},
+		{
+			Signals:    []core.Signal{core.DisplaySignal{Name: "LCD", Text: "Hello", Confidence: 0.90}},
+			CapturedAt: base.Add(200 * time.Millisecond),
+		},
+		{
+			Signals:    []core.Signal{core.DisplaySignal{Name: "LCD", Text: "Hello", Confidence: 1.00}},
+			CapturedAt: base.Add(400 * time.Millisecond),
+		},
+	}
+
+	displays := AggregateDisplays(frames)
+	if len(displays) != 1 {
+		t.Fatalf("expected 1 display, got %d", len(displays))
+	}
+
+	expectedConf := (0.80 + 0.90 + 1.00) / 3.0
+	if displays[0].Confidence != expectedConf {
+		t.Errorf("expected confidence %f, got %f", expectedConf, displays[0].Confidence)
+	}
+}
+
 func TestAggregateLEDs(t *testing.T) {
 	frames := []FrameResult{
 		{

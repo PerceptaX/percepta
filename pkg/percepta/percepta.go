@@ -38,6 +38,14 @@ func NewCore(cameraPath string, storage core.StorageDriver) (*Core, error) {
 }
 
 func (c *Core) Observe(deviceID string) (*core.Observation, error) {
+	return c.observe(deviceID, 0, 0)
+}
+
+func (c *Core) ObserveWithOptions(deviceID string, frameCount int, interval time.Duration) (*core.Observation, error) {
+	return c.observe(deviceID, frameCount, interval)
+}
+
+func (c *Core) observe(deviceID string, frameCount int, interval time.Duration) (*core.Observation, error) {
 	// Open camera
 	if err := c.camera.Open(); err != nil {
 		return nil, fmt.Errorf("camera open failed: %w", err)
@@ -45,7 +53,12 @@ func (c *Core) Observe(deviceID string) (*core.Observation, error) {
 	defer c.camera.Close()
 
 	// Multi-frame capture for complete LED detection (fixes ISS-001)
-	multiFrame := vision.NewMultiFrameCapture(c.camera, c.vision.GetParser())
+	var multiFrame *vision.MultiFrameCapture
+	if frameCount > 0 && interval > 0 {
+		multiFrame = vision.NewMultiFrameCaptureWithOptions(c.camera, c.vision.GetParser(), frameCount, interval)
+	} else {
+		multiFrame = vision.NewMultiFrameCapture(c.camera, c.vision.GetParser())
+	}
 	frames, err := multiFrame.Capture()
 	if err != nil {
 		return nil, fmt.Errorf("multi-frame capture failed: %w", err)
@@ -58,15 +71,17 @@ func (c *Core) Observe(deviceID string) (*core.Observation, error) {
 	// Aggregate LED detections across frames
 	leds := vision.AggregateLEDs(frames)
 
-	// Get display signals from most recent frame (displays don't need aggregation)
-	displays := getDisplaySignals(frames[len(frames)-1].Signals)
+	// Aggregate display detections across frames (tracks text changes)
+	aggregatedDisplays := vision.AggregateDisplays(frames)
 
 	// Combine signals
 	var signals []core.Signal
 	for _, led := range leds {
 		signals = append(signals, led)
 	}
-	signals = append(signals, displays...)
+	for _, display := range aggregatedDisplays {
+		signals = append(signals, display)
+	}
 
 	obs := &core.Observation{
 		SchemaVersion: core.CurrentSchemaVersion,
@@ -84,16 +99,6 @@ func (c *Core) Observe(deviceID string) (*core.Observation, error) {
 	}
 
 	return smoothedObs, nil
-}
-
-func getDisplaySignals(signals []core.Signal) []core.Signal {
-	var displays []core.Signal
-	for _, signal := range signals {
-		if _, ok := signal.(core.DisplaySignal); ok {
-			displays = append(displays, signal)
-		}
-	}
-	return displays
 }
 
 func (c *Core) ObservationCount() int {

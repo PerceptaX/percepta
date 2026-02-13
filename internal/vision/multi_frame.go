@@ -24,6 +24,15 @@ func NewMultiFrameCapture(camera core.CameraDriver, parser SignalParser) *MultiF
 	}
 }
 
+func NewMultiFrameCaptureWithOptions(camera core.CameraDriver, parser SignalParser, frameCount int, interval time.Duration) *MultiFrameCapture {
+	return &MultiFrameCapture{
+		camera:     camera,
+		parser:     parser,
+		frameCount: frameCount,
+		interval:   interval,
+	}
+}
+
 type FrameResult struct {
 	Signals    []core.Signal
 	CapturedAt time.Time
@@ -93,6 +102,87 @@ func AggregateLEDs(frames []FrameResult) []core.LEDSignal {
 	}
 
 	return leds
+}
+
+// AggregateDisplays combines display detections across frames, tracking text changes
+func AggregateDisplays(frames []FrameResult) []core.DisplaySignal {
+	if len(frames) == 0 {
+		return nil
+	}
+
+	type displayObs struct {
+		text       string
+		confidence float64
+		offsetMs   int64
+	}
+
+	displayMap := make(map[string][]displayObs)
+	var baseTime time.Time
+	if len(frames) > 0 {
+		baseTime = frames[0].CapturedAt
+	}
+
+	for _, frame := range frames {
+		offsetMs := frame.CapturedAt.Sub(baseTime).Milliseconds()
+		for _, signal := range frame.Signals {
+			if d, ok := signal.(core.DisplaySignal); ok {
+				displayMap[d.Name] = append(displayMap[d.Name], displayObs{
+					text:       d.Text,
+					confidence: d.Confidence,
+					offsetMs:   offsetMs,
+				})
+			}
+		}
+	}
+
+	var displays []core.DisplaySignal
+	for name, observations := range displayMap {
+		if len(observations) == 0 {
+			continue
+		}
+
+		// Deduplicate: only store transitions (consecutive different text)
+		var transitions []core.DisplayTextEntry
+		transitions = append(transitions, core.DisplayTextEntry{
+			OffsetMs:   observations[0].offsetMs,
+			Text:       observations[0].text,
+			Confidence: observations[0].confidence,
+		})
+		for i := 1; i < len(observations); i++ {
+			if observations[i].text != observations[i-1].text {
+				transitions = append(transitions, core.DisplayTextEntry{
+					OffsetMs:   observations[i].offsetMs,
+					Text:       observations[i].text,
+					Confidence: observations[i].confidence,
+				})
+			}
+		}
+
+		// Average confidence across all observations
+		totalConf := 0.0
+		for _, obs := range observations {
+			totalConf += obs.confidence
+		}
+		avgConf := totalConf / float64(len(observations))
+
+		// Latest text for backward compat
+		latest := observations[len(observations)-1]
+
+		changed := len(transitions) > 1
+		display := core.DisplaySignal{
+			Name:       name,
+			Text:       latest.text,
+			Confidence: avgConf,
+			Changed:    changed,
+		}
+		if changed {
+			display.History = transitions
+		}
+
+		displays = append(displays, display)
+	}
+
+	return displays
 }
 
 type ledAggregator struct {

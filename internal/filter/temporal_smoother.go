@@ -110,6 +110,12 @@ func (t *TemporalSmoother) smoothDisplays(newObs *core.Observation, history []co
 	newDisplays := extractDisplays(newObs.Signals)
 
 	for _, newDisplay := range newDisplays {
+		// Skip smoothing for displays with detected state changes
+		if newDisplay.Changed {
+			smoothed = append(smoothed, newDisplay)
+			continue
+		}
+
 		// Find this display in recent history
 		historicalTexts := t.findDisplayHistory(newDisplay.Name, history)
 

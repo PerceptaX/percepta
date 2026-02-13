@@ -186,6 +186,71 @@ func TestEnsureSchemaVersion(t *testing.T) {
 	}
 }
 
+func TestDisplaySignal_BackwardCompat(t *testing.T) {
+	// Static display (no history/changed) should serialize identically to old format
+	staticDisplay := DisplaySignal{
+		Name:       "LCD",
+		Text:       "Ready",
+		Confidence: 0.90,
+	}
+
+	data, err := json.Marshal(staticDisplay)
+	if err != nil {
+		t.Fatalf("Failed to marshal static display: %v", err)
+	}
+
+	jsonStr := string(data)
+
+	// Should NOT contain "history" or "changed" fields (omitempty)
+	if containsHelper(jsonStr, "history") {
+		t.Errorf("Static display JSON should not contain 'history' field: %s", jsonStr)
+	}
+	if containsHelper(jsonStr, "changed") {
+		t.Errorf("Static display JSON should not contain 'changed' field: %s", jsonStr)
+	}
+
+	// Changing display should include history and changed
+	changingDisplay := DisplaySignal{
+		Name:       "LCD",
+		Text:       "Ready",
+		Confidence: 0.90,
+		Changed:    true,
+		History: []DisplayTextEntry{
+			{OffsetMs: 0, Text: "Boot", Confidence: 0.90},
+			{OffsetMs: 400, Text: "Ready", Confidence: 0.90},
+		},
+	}
+
+	data, err = json.Marshal(changingDisplay)
+	if err != nil {
+		t.Fatalf("Failed to marshal changing display: %v", err)
+	}
+
+	jsonStr = string(data)
+	if !containsHelper(jsonStr, "history") {
+		t.Errorf("Changing display JSON should contain 'history' field: %s", jsonStr)
+	}
+	if !containsHelper(jsonStr, "changed") {
+		t.Errorf("Changing display JSON should contain 'changed' field: %s", jsonStr)
+	}
+
+	// Old format JSON (without history/changed) should deserialize correctly
+	oldJSON := `{"name":"LCD","text":"Ready","confidence":0.9}`
+	var deserialized DisplaySignal
+	if err := json.Unmarshal([]byte(oldJSON), &deserialized); err != nil {
+		t.Fatalf("Failed to unmarshal old format: %v", err)
+	}
+	if deserialized.Changed {
+		t.Errorf("Old format should have Changed=false")
+	}
+	if deserialized.History != nil {
+		t.Errorf("Old format should have nil History")
+	}
+	if deserialized.Text != "Ready" {
+		t.Errorf("Expected text 'Ready', got '%s'", deserialized.Text)
+	}
+}
+
 func contains(s, substr string) bool {
 	return len(s) >= len(substr) && (s == substr || len(s) > len(substr) && containsHelper(s, substr))
 }
