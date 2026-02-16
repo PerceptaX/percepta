@@ -631,9 +631,9 @@ func TestLEDAssertion_String(t *testing.T) {
 	color := core.RGB{R: 255, G: 128, B: 0}
 
 	tests := []struct {
-		name     string
+		name      string
 		assertion *LEDAssertion
-		expected string
+		expected  string
 	}{
 		{
 			name: "ON state",

@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 )
 
@@ -14,8 +15,15 @@ func setupTestConfig(t *testing.T) (string, func()) {
 	}
 
 	// Override HOME environment variable
+	// On Windows, os.UserHomeDir() uses USERPROFILE, not HOME
 	originalHome := os.Getenv("HOME")
 	os.Setenv("HOME", tmpDir)
+
+	var originalUserProfile string
+	if runtime.GOOS == "windows" {
+		originalUserProfile = os.Getenv("USERPROFILE")
+		os.Setenv("USERPROFILE", tmpDir)
+	}
 
 	// Clear any environment variables that might interfere
 	originalAPIKey := os.Getenv("ANTHROPIC_API_KEY")
@@ -25,6 +33,9 @@ func setupTestConfig(t *testing.T) (string, func()) {
 
 	cleanup := func() {
 		os.Setenv("HOME", originalHome)
+		if runtime.GOOS == "windows" {
+			os.Setenv("USERPROFILE", originalUserProfile)
+		}
 		if originalAPIKey != "" {
 			os.Setenv("ANTHROPIC_API_KEY", originalAPIKey)
 		}
@@ -54,9 +65,8 @@ func TestLoad_MissingConfigFile(t *testing.T) {
 
 	// Verify config directory structure doesn't need to exist
 	configPath := filepath.Join(tmpDir, ".config", "percepta")
-	if _, err := os.Stat(configPath); err == nil {
-		// It's OK if the directory exists, but it shouldn't be required
-	}
+	_, statErr := os.Stat(configPath)
+	_ = statErr // It's OK if the directory exists, but it shouldn't be required
 }
 
 func TestLoad_DefaultValues(t *testing.T) {

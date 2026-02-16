@@ -70,9 +70,9 @@ func TestUserError_Error_NoDocsURL(t *testing.T) {
 
 func TestMissingAPIKey(t *testing.T) {
 	tests := []struct {
-		service      string
-		expectedVar  string
-		expectedMsg  string
+		service     string
+		expectedVar string
+		expectedMsg string
 	}{
 		{"ANTHROPIC", "ANTHROPIC_API_KEY", "ANTHROPIC API key not set"},
 		{"OPENAI", "OPENAI_API_KEY", "OPENAI API key not set"},

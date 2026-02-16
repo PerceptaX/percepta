@@ -2,30 +2,14 @@ package ui
 
 import (
 	"bytes"
-	"io"
-	"os"
 	"strings"
 	"testing"
 	"time"
 )
 
-func captureStderr(f func()) string {
-	old := os.Stderr
-	r, w, _ := os.Pipe()
-	os.Stderr = w
-
-	f()
-
-	w.Close()
-	os.Stderr = old
-
-	var buf bytes.Buffer
-	io.Copy(&buf, r)
-	return buf.String()
-}
-
 func TestNewSpinner(t *testing.T) {
-	spinner := NewSpinner("Testing...")
+	var buf bytes.Buffer
+	spinner := newSpinner("Testing...", &buf)
 	defer spinner.Stop(true)
 
 	if spinner == nil {
@@ -46,16 +30,14 @@ func TestNewSpinner(t *testing.T) {
 }
 
 func TestSpinner_Stop_Success(t *testing.T) {
-	spinner := NewSpinner("Operation")
+	var buf bytes.Buffer
+	spinner := newSpinner("Operation", &buf)
 
-	// Let it spin for a moment
 	time.Sleep(100 * time.Millisecond)
 
-	output := captureStderr(func() {
-		spinner.Stop(true)
-	})
+	spinner.Stop(true)
+	output := buf.String()
 
-	// Verify success indicator is present
 	if !strings.Contains(output, "✓") {
 		t.Error("Expected success indicator ✓")
 	}
@@ -64,23 +46,20 @@ func TestSpinner_Stop_Success(t *testing.T) {
 		t.Error("Expected message in output")
 	}
 
-	// Verify spinner is stopped
 	if !spinner.stopped {
 		t.Error("Expected spinner to be stopped")
 	}
 }
 
 func TestSpinner_Stop_Failure(t *testing.T) {
-	spinner := NewSpinner("Operation")
+	var buf bytes.Buffer
+	spinner := newSpinner("Operation", &buf)
 
-	// Let it spin for a moment
 	time.Sleep(100 * time.Millisecond)
 
-	output := captureStderr(func() {
-		spinner.Stop(false)
-	})
+	spinner.Stop(false)
+	output := buf.String()
 
-	// Verify failure indicator is present
 	if !strings.Contains(output, "✗") {
 		t.Error("Expected failure indicator ✗")
 	}
@@ -89,23 +68,20 @@ func TestSpinner_Stop_Failure(t *testing.T) {
 		t.Error("Expected message in output")
 	}
 
-	// Verify spinner is stopped
 	if !spinner.stopped {
 		t.Error("Expected spinner to be stopped")
 	}
 }
 
 func TestSpinner_StopWithMessage_Success(t *testing.T) {
-	spinner := NewSpinner("Loading")
+	var buf bytes.Buffer
+	spinner := newSpinner("Loading", &buf)
 
-	// Let it spin for a moment
 	time.Sleep(100 * time.Millisecond)
 
-	output := captureStderr(func() {
-		spinner.StopWithMessage(true, "Completed successfully")
-	})
+	spinner.StopWithMessage(true, "Completed successfully")
+	output := buf.String()
 
-	// Verify success indicator is present
 	if !strings.Contains(output, "✓") {
 		t.Error("Expected success indicator ✓")
 	}
@@ -113,24 +89,17 @@ func TestSpinner_StopWithMessage_Success(t *testing.T) {
 	if !strings.Contains(output, "Completed successfully") {
 		t.Error("Expected custom message in output")
 	}
-
-	// Original message should not be in final output (only custom message)
-	if strings.Contains(output, "Loading") && !strings.Contains(output, "Completed") {
-		t.Error("Expected custom message to replace original")
-	}
 }
 
 func TestSpinner_StopWithMessage_Failure(t *testing.T) {
-	spinner := NewSpinner("Processing")
+	var buf bytes.Buffer
+	spinner := newSpinner("Processing", &buf)
 
-	// Let it spin for a moment
 	time.Sleep(100 * time.Millisecond)
 
-	output := captureStderr(func() {
-		spinner.StopWithMessage(false, "Failed to process")
-	})
+	spinner.StopWithMessage(false, "Failed to process")
+	output := buf.String()
 
-	// Verify failure indicator is present
 	if !strings.Contains(output, "✗") {
 		t.Error("Expected failure indicator ✗")
 	}
@@ -141,71 +110,61 @@ func TestSpinner_StopWithMessage_Failure(t *testing.T) {
 }
 
 func TestSpinner_DoubleStop(t *testing.T) {
-	spinner := NewSpinner("Test")
+	var buf bytes.Buffer
+	spinner := newSpinner("Test", &buf)
 
-	// Let it spin for a moment
 	time.Sleep(100 * time.Millisecond)
 
-	// First stop
-	output1 := captureStderr(func() {
-		spinner.Stop(true)
-	})
+	spinner.Stop(true)
 
-	if !strings.Contains(output1, "✓") {
+	if !strings.Contains(buf.String(), "✓") {
 		t.Error("Expected success indicator on first stop")
 	}
 
-	// Second stop should be a no-op
-	output2 := captureStderr(func() {
-		spinner.Stop(false)
-	})
+	// Record buffer length after first stop
+	lenAfterFirst := buf.Len()
 
-	// Second stop should produce no output
-	if strings.Contains(output2, "✓") || strings.Contains(output2, "✗") {
-		t.Error("Expected no output on second stop")
+	// Second stop should be a no-op
+	spinner.Stop(false)
+
+	if buf.Len() != lenAfterFirst {
+		t.Error("Expected no additional output on second stop")
 	}
 
-	// Spinner should still be marked as stopped
 	if !spinner.stopped {
 		t.Error("Expected spinner to remain stopped")
 	}
 }
 
 func TestSpinner_DoubleStopWithMessage(t *testing.T) {
-	spinner := NewSpinner("Test")
+	var buf bytes.Buffer
+	spinner := newSpinner("Test", &buf)
 
-	// Let it spin for a moment
 	time.Sleep(100 * time.Millisecond)
 
-	// First stop
-	output1 := captureStderr(func() {
-		spinner.StopWithMessage(true, "Done")
-	})
+	spinner.StopWithMessage(true, "Done")
 
-	if !strings.Contains(output1, "Done") {
+	if !strings.Contains(buf.String(), "Done") {
 		t.Error("Expected custom message on first stop")
 	}
 
-	// Second stop should be a no-op
-	output2 := captureStderr(func() {
-		spinner.StopWithMessage(false, "Failed")
-	})
+	lenAfterFirst := buf.Len()
 
-	// Second stop should produce no output
-	if strings.Contains(output2, "Failed") {
-		t.Error("Expected no output on second stop with message")
+	// Second stop should be a no-op
+	spinner.StopWithMessage(false, "Failed")
+
+	if buf.Len() != lenAfterFirst {
+		t.Error("Expected no additional output on second stop with message")
 	}
 }
 
 func TestSpinner_ImmediateStop(t *testing.T) {
-	// Test stopping immediately after creation
-	spinner := NewSpinner("Quick test")
+	var buf bytes.Buffer
+	spinner := newSpinner("Quick test", &buf)
 
-	output := captureStderr(func() {
-		spinner.Stop(true)
-	})
+	spinner.Stop(true)
+	output := buf.String()
 
-	// Should still work correctly
 	if !strings.Contains(output, "✓") {
 		t.Error("Expected success indicator even for immediate stop")
 	}
@@ -216,23 +175,18 @@ func TestSpinner_ImmediateStop(t *testing.T) {
 }
 
 func TestSpinner_Lifecycle(t *testing.T) {
-	// Test complete lifecycle: create -> spin -> stop
-	spinner := NewSpinner("Lifecycle test")
+	var buf bytes.Buffer
+	spinner := newSpinner("Lifecycle test", &buf)
 
-	// Verify initial state
 	if spinner.stopped {
 		t.Error("Expected spinner to not be stopped initially")
 	}
 
-	// Let it spin
 	time.Sleep(200 * time.Millisecond)
 
-	// Stop successfully
-	output := captureStderr(func() {
-		spinner.Stop(true)
-	})
+	spinner.Stop(true)
+	output := buf.String()
 
-	// Verify final state
 	if !spinner.stopped {
 		t.Error("Expected spinner to be stopped")
 	}
@@ -243,47 +197,32 @@ func TestSpinner_Lifecycle(t *testing.T) {
 }
 
 func TestSpinner_MultipleSpinners(t *testing.T) {
-	// Test that multiple spinners can coexist
-	spinner1 := NewSpinner("Task 1")
-	spinner2 := NewSpinner("Task 2")
-	spinner3 := NewSpinner("Task 3")
+	var buf1, buf2, buf3 bytes.Buffer
+	spinner1 := newSpinner("Task 1", &buf1)
+	spinner2 := newSpinner("Task 2", &buf2)
+	spinner3 := newSpinner("Task 3", &buf3)
 
-	// Let them spin
 	time.Sleep(150 * time.Millisecond)
 
-	// Stop them in different orders
-	captureStderr(func() {
-		spinner2.Stop(true)
-	})
-
+	spinner2.Stop(true)
 	time.Sleep(50 * time.Millisecond)
-
-	captureStderr(func() {
-		spinner1.Stop(false)
-	})
-
+	spinner1.Stop(false)
 	time.Sleep(50 * time.Millisecond)
+	spinner3.Stop(true)
 
-	captureStderr(func() {
-		spinner3.Stop(true)
-	})
-
-	// Verify all are stopped
 	if !spinner1.stopped || !spinner2.stopped || !spinner3.stopped {
 		t.Error("Expected all spinners to be stopped")
 	}
 }
 
 func TestSpinner_LongRunning(t *testing.T) {
-	// Test a spinner that runs for a longer duration
-	spinner := NewSpinner("Long operation")
+	var buf bytes.Buffer
+	spinner := newSpinner("Long operation", &buf)
 
-	// Let it spin through multiple frames
 	time.Sleep(500 * time.Millisecond)
 
-	output := captureStderr(func() {
-		spinner.Stop(true)
-	})
+	spinner.Stop(true)
+	output := buf.String()
 
 	if !strings.Contains(output, "✓") {
 		t.Error("Expected success indicator after long run")
@@ -295,16 +234,14 @@ func TestSpinner_LongRunning(t *testing.T) {
 }
 
 func TestSpinner_EmptyMessage(t *testing.T) {
-	// Test spinner with empty message
-	spinner := NewSpinner("")
+	var buf bytes.Buffer
+	spinner := newSpinner("", &buf)
 
 	time.Sleep(100 * time.Millisecond)
 
-	output := captureStderr(func() {
-		spinner.Stop(true)
-	})
+	spinner.Stop(true)
+	output := buf.String()
 
-	// Should still show indicator
 	if !strings.Contains(output, "✓") {
 		t.Error("Expected success indicator even with empty message")
 	}
@@ -315,15 +252,14 @@ func TestSpinner_EmptyMessage(t *testing.T) {
 }
 
 func TestSpinner_LongMessage(t *testing.T) {
-	// Test spinner with a very long message
+	var buf bytes.Buffer
 	longMessage := strings.Repeat("Very long message ", 20)
-	spinner := NewSpinner(longMessage)
+	spinner := newSpinner(longMessage, &buf)
 
 	time.Sleep(100 * time.Millisecond)
 
-	output := captureStderr(func() {
-		spinner.Stop(true)
-	})
+	spinner.Stop(true)
+	output := buf.String()
 
 	if !strings.Contains(output, "✓") {
 		t.Error("Expected success indicator with long message")
