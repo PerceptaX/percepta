@@ -40,6 +40,7 @@ type FrameResult struct {
 
 func (m *MultiFrameCapture) Capture() ([]FrameResult, error) {
 	var results []FrameResult
+	var lastParseErr error
 
 	for i := 0; i < m.frameCount; i++ {
 		// Capture frame
@@ -51,7 +52,7 @@ func (m *MultiFrameCapture) Capture() ([]FrameResult, error) {
 		// Parse signals
 		signals, err := m.parser.Parse(frame)
 		if err != nil {
-			// Log but continue with other frames
+			lastParseErr = fmt.Errorf("frame %d parse failed: %w", i, err)
 			continue
 		}
 
@@ -64,6 +65,11 @@ func (m *MultiFrameCapture) Capture() ([]FrameResult, error) {
 		if i < m.frameCount-1 {
 			time.Sleep(m.interval)
 		}
+	}
+
+	// If no frames parsed successfully, return the last parse error
+	if len(results) == 0 && lastParseErr != nil {
+		return nil, lastParseErr
 	}
 
 	return results, nil

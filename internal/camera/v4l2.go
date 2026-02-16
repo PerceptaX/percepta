@@ -4,6 +4,7 @@ package camera
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/blackjack/webcam"
 	"github.com/perceptumx/percepta/internal/core"
@@ -55,6 +56,16 @@ func (c *V4L2Camera) Open() error {
 		return fmt.Errorf("failed to start streaming: %w", err)
 	}
 
+	// Discard a few warmup frames so the camera can stabilize exposure and
+	// white balance. Without this, the first real frames may be blank.
+	for i := 0; i < 3; i++ {
+		if wErr := c.cam.WaitForFrame(5); wErr == nil {
+			//nolint:errcheck // Warmup frames are intentionally discarded
+			_, _ = c.cam.ReadFrame()
+		}
+		time.Sleep(50 * time.Millisecond)
+	}
+
 	return nil
 }
 
@@ -74,8 +85,13 @@ func (c *V4L2Camera) CaptureFrame() ([]byte, error) {
 		return nil, fmt.Errorf("failed to read frame: %w", err)
 	}
 
-	// Return JPEG bytes (MJPEG is already JPEG frames)
-	return frame, nil
+	// Copy frame data: ReadFrame returns a slice backed by a mmap'd V4L2 buffer
+	// that is released immediately. The kernel can overwrite it at any time, so
+	// we must copy before returning.
+	copied := make([]byte, len(frame))
+	copy(copied, frame)
+
+	return copied, nil
 }
 
 func (c *V4L2Camera) Close() error {
